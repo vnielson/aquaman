@@ -1,0 +1,46 @@
+{%  extends "base.html" %}
+{% block content %}
+<div class = "jumbotron">
+    <h2>List of Sensor Data</h2>
+    <br>
+ <div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <strong>Name</strong>
+    </div>
+    <div class="col-sm">
+        <strong>Coonfiguration</strong>
+    </div>
+      <div class="col-sm">
+          <strong>Crop</strong>
+      </div>
+      <div class="col-sm">
+          <strong>Valve</strong>
+      </div>
+       <div class="col-sm">
+          <strong>BCM Pin</strong>
+      </div>
+  </div>
+    {% for nxtsensor in sensors %}
+    <div class="row">
+        <div class="col-sm">
+            {{ nxtsensor.sensor_id}}
+        </div>
+        <div class="col-sm">
+            {{ nxtsensor.configuration}}
+        </div>
+        <div class="col-sm">
+            {{ nxtsensor.crop}}
+        </div>
+        <div class="col-sm">
+            {{ nxtsensor.valve}}
+        </div>
+            <div class="col-sm">
+            {{ nxtsensor.bcm_pin}}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+</div>
+{%  endblock %}
+

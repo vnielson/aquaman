@@ -1,0 +1,16 @@
+{%  extends "base.html" %}
+{% block content %}
+    <div class="jumbotron">
+        <h1>Add Crop Information Page</h1>
+        <p>Add New Crop Info Below</p>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            {{ form.crop.label }}{{ form.crop }}<br>
+            {{ form.ideal_kpa.label }}{{ form.ideal_kpa }}<br>
+            {{ form.dry_kpa.label }}{{ form.dry_kpa }}<br>
+            {{ form.saturated_kpa.label }}{{ form.saturated_kpa }}<br>
+            {{ form.submit() }}
+        </form>
+    </div>
+{%  endblock %}
+

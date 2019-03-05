@@ -1,0 +1,14 @@
+{%  extends "base.html" %}
+{% block content %}
+    <div class="jumbotron">
+        <h1>Add Valve Page</h1>
+        <p>Add New Valve Info Below</p>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            {{ form.valve_id.label }}{{ form.valve_id }}<br>
+            {{ form.bcm_pin.label }}{{ form.bcm_pin }}<br>
+            {{ form.submit() }}
+        </form>
+    </div>
+{%  endblock %}
+

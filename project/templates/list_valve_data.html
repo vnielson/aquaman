@@ -1,0 +1,28 @@
+{%  extends "base.html" %}
+{% block content %}
+<div class = "jumbotron">
+    <h2>List of Valve Data</h2>
+    <br>
+ <div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <strong>Name</strong>
+    </div>
+    <div class="col-sm">
+        <strong>BCM Pin</strong>
+    </div>
+  </div>
+    {% for nxtvalve in valves %}
+    <div class="row">
+        <div class="col-sm">
+            {{ nxtvalve.valve_id}}
+        </div>
+        <div class="col-sm">
+            {{ nxtvalve.bcm_pin}}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+</div>
+{%  endblock %}
+

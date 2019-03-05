@@ -1,0 +1,12 @@
+{%  extends "base.html" %}
+{% block content %}
+    <div class="jumbotron">
+        <h1>Delete Valve Information Page</h1>
+        <p>Enter the Valve ID that you want to remove</p>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            {{ form.valve_id.label }}{{ form.valve_id }}
+            {{ form.submit() }}
+        </form>
+    </div>
+{%  endblock %}

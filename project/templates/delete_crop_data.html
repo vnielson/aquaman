@@ -1,0 +1,12 @@
+{%  extends "base.html" %}
+{% block content %}
+    <div class="jumbotron">
+        <h1>Delete Crop Information Page</h1>
+        <p>Enter the crop ID that you want to remove</p>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            {{ form.crop.label }}{{ form.crop }}
+            {{ form.submit() }}
+        </form>
+    </div>
+{%  endblock %}

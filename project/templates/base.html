@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AquaMan</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <ul class="nav">
+
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('core.index') }}">Home</a>
+  </li>
+ <div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="SensorMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Sensor Data
+  </button>
+  <div class="dropdown-menu" aria-labelledby="Sensor Data">
+    <a class="dropdown-item" href="{{ url_for('sensor_data.list_sensor_data') }}">List Sensor Data</a>
+    <a class="dropdown-item" href="{{ url_for('sensor_data.add_sensor_data') }}">Add Sensor Data</a>
+    <a class="dropdown-item" href="{{ url_for('sensor_data.delete_sensor_data') }}">Delete Sensor Data</a>
+  </div>
+</div>
+
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="CropMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Crop Data
+  </button>
+  <div class="dropdown-menu" aria-labelledby="Crop Data">
+    <a class="dropdown-item" href="{{ url_for('crop_data.list_crop_data') }}">List Crop Data</a>
+    <a class="dropdown-item" href="{{ url_for('crop_data.add_crop_data') }}">Add Crop Data</a>
+    <a class="dropdown-item" href="{{ url_for('crop_data.delete_crop_data') }}">Delete Crop Data</a>
+  </div>
+</div>
+
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="ValveMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Valve Data
+  </button>
+  <div class="dropdown-menu" aria-labelledby="Valve Data">
+    <a class="dropdown-item" href="{{ url_for('valve_data.list_valve_data') }}">List Valve Data</a>
+    <a class="dropdown-item" href="{{ url_for('valve_data.add_valve_data') }}">Add Valve Data</a>
+    <a class="dropdown-item" href="{{ url_for('valve_data.delete_valve_data') }}">Delete Valve Data</a>
+  </div>
+</div>
+
+  </ul>
+<div class="container">
+  {% block content %}
+
+  {% endblock %}
+</div>
+
+</body>
+</html>
+

@@ -1,0 +1,12 @@
+{%  extends "base.html" %}
+{% block content %}
+    <div class="jumbotron">
+        <h1>Delete Sensor Information Page</h1>
+        <p>Enter the sensor ID that you want to remove</p>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            {{ form.sensor_id.label }}{{ form.sensor_id }}
+            {{ form.submit() }}
+        </form>
+    </div>
+{%  endblock %}

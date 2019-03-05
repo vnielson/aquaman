@@ -1,0 +1,40 @@
+{%  extends "base.html" %}
+{% block content %}
+<div class = "jumbotron">
+    <h2>List of Crop Data</h2>
+    <br>
+ <div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <strong>Name</strong>
+    </div>
+    <div class="col-sm">
+        <strong>Ideal KPa Value</strong>
+    </div>
+      <div class="col-sm">
+          <strong>Dry KPa Value</strong>
+      </div>
+      <div class="col-sm">
+          <strong>Saturated KPa Value</strong>
+      </div>
+  </div>
+    {% for nxtcrop in crops %}
+    <div class="row">
+        <div class="col-sm">
+            {{ nxtcrop.crop}}
+        </div>
+        <div class="col-sm">
+            {{ nxtcrop.ideal_kpa}}
+        </div>
+        <div class="col-sm">
+            {{ nxtcrop.dry_kpa}}
+        </div>
+        <div class="col-sm">
+            {{ nxtcrop.saturated_kpa}}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+</div>
+{%  endblock %}
+
