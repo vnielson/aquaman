@@ -1,5 +1,5 @@
 from project import db
-#from datetime import datetime
+from datetime import datetime
 
 
 
@@ -53,3 +53,25 @@ class Valve_Info(db.Model):
 
 
 
+
+class SensorReadings(db.Model):
+    __tablename__ = 'sensorreadings'
+    p_key = db.Column(db.Integer, primary_key=True)
+    #Column('last_updated', DateTime, onupdate=datetime.datetime.now)
+    recorded_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow(),onupdate=datetime.utcnow())
+    sensor_id = db.Column(db.String(64), db.ForeignKey('sensor_info.sensor_id'))
+    kpa_value = db.Column(db.NUMERIC(precision=3))
+    min_frequency = db.Column(db.NUMERIC(precision=3))
+    max_frequency = db.Column(db.NUMERIC(precision=3))
+    computed_frequency = db.Column(db.NUMERIC(precision=3))
+    mean = db.Column(db.NUMERIC(precision=3))
+    std_dev = db.Column(db.NUMERIC(precision=3))
+
+    def __init__(self, sensor_id, reading_data):
+        self.sensor_id = sensor_id
+        self.kpa_value = reading_data["kpa_value"]
+        self.min_frequency = reading_data["min_frequency"]
+        self.max_frequency = reading_data["max_frequency"]
+        self.computed_frequency = reading_data["computed_frequency"]
+        self.mean = reading_data["mean"]
+        self.std_dev = reading_data["std_dev"]

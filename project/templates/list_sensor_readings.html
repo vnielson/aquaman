@@ -1,0 +1,70 @@
+{%  extends "base.html" %}
+{% block content %}
+<div class = "jumbotron">
+    <h2>List of Recent Sensor Reading Data</h2>
+    <br>
+ <div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <strong>Key</strong>
+    </div>
+    <div class="col-sm">
+      <strong>Recorded</strong>
+    </div>
+    <div class="col-sm">
+      <strong>Sensor Id</strong>
+    </div>
+    <div class="col-sm">
+      <strong>KPa Value</strong>
+    </div>
+    <div class="col-sm">
+      <strong>Min Freq</strong>
+    </div>
+    <div class="col-sm">
+      <strong>Max Freq</strong>
+    </div>
+    <div class="col-sm">
+      <strong>Computed Freq</strong>
+    </div>
+    <div class="col-sm">
+      <strong>Mean</strong>
+    </div>
+    <div class="col-sm">
+      <strong>STD Dev</strong>
+    </div>
+  </div>
+    {% for nxtreading in readings %}
+    <div class="row">
+        <div class="col-sm">
+            {{ nxtreading.p_key}}
+        </div>
+        <div class="col-sm">
+            {{ nxtreading.recorded_at}}
+        </div>
+        <div class="col-sm">
+            {{ nxtreading.sensor_id}}
+        </div>
+        <div class="col-sm">
+            {{ nxtreading.kpa_value}}
+        </div>
+        <div class="col-sm">
+            {{ nxtreading.min_frequency}}
+        </div>
+        <div class="col-sm">
+            {{ nxtreading.max_frequency}}
+        </div>
+        <div class="col-sm">
+            {{ nxtreading.computed_frequency}}
+        </div>
+        <div class="col-sm">
+            {{ nxtreading.mean}}
+        </div>
+        <div class="col-sm">
+            {{ nxtreading.std_dev}}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+</div>
+{%  endblock %}
+

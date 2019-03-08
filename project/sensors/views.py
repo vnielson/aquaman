@@ -1,6 +1,7 @@
 from flask import render_template, Blueprint, url_for, redirect
 from project import db
 from project.models import Sensor_Info
+from project.models import SensorReadings
 from project.sensors.forms import AddSensorForm, DeleteSensorForm
 
 sensor_data = Blueprint('sensor_data', __name__)
@@ -48,4 +49,13 @@ def delete_sensor_data():
         return redirect(url_for('sensor_data.list_sensor_data'))
 
     return render_template('delete_sensor_data.html', form=form)
+
+
+
+@sensor_data.route('/sensorreadings/list')
+def list_sensor_readings():
+
+    readings = SensorReadings.query.all()
+    return render_template('list_sensor_readings.html', readings=readings)
+
 
