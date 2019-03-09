@@ -9,7 +9,10 @@
       <strong>Key</strong>
     </div>
     <div class="col-sm">
-      <strong>Recorded</strong>
+      <strong>Date</strong>
+    </div>
+     <div class="col-sm">
+      <strong>Time</strong>
     </div>
     <div class="col-sm">
       <strong>Sensor Id</strong>
@@ -39,28 +42,31 @@
             {{ nxtreading.p_key}}
         </div>
         <div class="col-sm">
-            {{ nxtreading.recorded_at}}
+            {{ nxtreading.recorded_at|formatdatetime('%b-%d')}}
+        </div>
+         <div class="col-sm">
+            {{ nxtreading.recorded_at|formatdatetime('%X ')}}
         </div>
         <div class="col-sm">
             {{ nxtreading.sensor_id}}
         </div>
         <div class="col-sm">
-            {{ nxtreading.kpa_value}}
+            {{ nxtreading.kpa_value|round(2)}}
         </div>
         <div class="col-sm">
-            {{ nxtreading.min_frequency}}
+            {{ nxtreading.min_frequency|round(2)}}
         </div>
         <div class="col-sm">
-            {{ nxtreading.max_frequency}}
+            {{ nxtreading.max_frequency|round(2) }}
         </div>
         <div class="col-sm">
-            {{ nxtreading.computed_frequency}}
+            {{ nxtreading.computed_frequency|round(2)}}
         </div>
         <div class="col-sm">
-            {{ nxtreading.mean}}
+            {{ nxtreading.mean|round(2)}}
         </div>
         <div class="col-sm">
-            {{ nxtreading.std_dev}}
+            {{ nxtreading.std_dev|round(2)}}
         </div>
     </div>
     {% endfor %}

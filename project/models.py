@@ -1,5 +1,6 @@
 from project import db
 from datetime import datetime
+import pytz
 
 
 
@@ -53,19 +54,17 @@ class Valve_Info(db.Model):
 
 
 
-
 class SensorReadings(db.Model):
     __tablename__ = 'sensorreadings'
     p_key = db.Column(db.Integer, primary_key=True)
-    #Column('last_updated', DateTime, onupdate=datetime.datetime.now)
-    recorded_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow(),onupdate=datetime.utcnow())
+    recorded_at = db.Column(db.DateTime, nullable=False, default=datetime.now(pytz.timezone('America/Denver')), onupdate=datetime.now(pytz.timezone('America/Denver')))
     sensor_id = db.Column(db.String(64), db.ForeignKey('sensor_info.sensor_id'))
-    kpa_value = db.Column(db.NUMERIC(precision=3))
-    min_frequency = db.Column(db.NUMERIC(precision=3))
-    max_frequency = db.Column(db.NUMERIC(precision=3))
-    computed_frequency = db.Column(db.NUMERIC(precision=3))
-    mean = db.Column(db.NUMERIC(precision=3))
-    std_dev = db.Column(db.NUMERIC(precision=3))
+    kpa_value = db.Column(db.Integer)
+    min_frequency = db.Column(db.NUMERIC(10,3))
+    max_frequency = db.Column(db.NUMERIC(10,3))
+    computed_frequency = db.Column(db.NUMERIC(10,3))
+    mean = db.Column(db.NUMERIC(10,3))
+    std_dev = db.Column(db.NUMERIC(10,3))
 
     def __init__(self, sensor_id, reading_data):
         self.sensor_id = sensor_id

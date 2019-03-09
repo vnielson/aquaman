@@ -104,7 +104,7 @@ class MoistureMeter:
             min_frequency = 1.0 / per_array.max()
             max_frequency = 1.0 / per_array.min()
             mean = 1 / per_array.mean()
-            stddev = 1 / per_array.std()
+            stddev = per_array.std()
 
         return_data = {"kpa_value": kPa, "computed_frequency": frequency, "min_frequency": min_frequency,
                        "max_frequency": max_frequency, "mean": mean, "std_dev": stddev}

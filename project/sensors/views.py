@@ -56,6 +56,10 @@ def delete_sensor_data():
 def list_sensor_readings():
 
     readings = SensorReadings.query.all()
+    test = 23.12345678
+    x = round(test, 2)
+
     return render_template('list_sensor_readings.html', readings=readings)
 
 
+# ahdsfafk aksf a
