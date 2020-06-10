@@ -9,10 +9,6 @@ crop_data = Blueprint('crop_data', __name__)
 def list_crop_data():
 
     crops = Crop_Info.query.all()
-    print("crops[1] {}   {}".format(crops[1].crop,crops[1].dry_kpa))
-    crops1 = [{"name":"Tomatoes", "ideal_kpa":"33"},{"name":"Peppers", "ideal_kpa":"43"}]
-    print("CROPS:")
-    print (crops)
     return render_template('list_crop_data.html', crops=crops)
 
 

@@ -1,8 +1,8 @@
 import os
 import datetime
-from datetime import timezone
+#from datetime import timezone
 import time
-import pytz
+#import pytz
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -10,7 +10,7 @@ from flask_migrate import Migrate
 
 app = Flask(__name__)
 
-
+# asdfdsf
 ####################################################################
 ##################### CONFIGURATION           ######################
 ####################################################################
@@ -39,17 +39,19 @@ def format_datetime(value, format="%d %b %Y %I:%M %p"):
     if value is None:
         return ""
 
-    mytimezone = pytz.timezone("America/Denver")  # my current timezone
-    dtobj4 = mytimezone.localize(value)  # localize function
+    print(value)
+#    mytimezone = pytz.timezone("America/Denver")  # my current timezone
+#    dtobj4 = mytimezone.localize(value)  # localize function
 
-    tz_time = dtobj4.astimezone(pytz.timezone("America/Denver"))  # astimezone method
-    print(tz_time)
+ #   tz_time = dtobj4.astimezone(pytz.timezone("America/Denver"))  # astimezone method
+  #  print(tz_time)
 
 
-    print("Value: {}".format(value))
-    print("Value.tzinfo {}".format(value.tzinfo))
+#    print("Value: {}".format(value))
+#    print("Value.tzinfo {}".format(value.tzinfo))
 
-    return tz_time.strftime(format)
+#    return tz_time.strftime(format)
+    return value.strftime(format)
 
 ####################################################################
 #####################  BLUEPRINT CONFIGS      ######################

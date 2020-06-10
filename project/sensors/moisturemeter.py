@@ -37,7 +37,7 @@ class MoistureMeter:
         elif frequency <= 293:
             kPa = 200
 
-        return kPa
+        return int(kPa)
 
     def get_kpa_value(self):
         # set up the pin for input
@@ -88,7 +88,7 @@ class MoistureMeter:
                 per_array[i] = time_delta.total_seconds()
                 tstart = datetime.now()
 
-        print("per_array: ", per_array)
+        # print("per_array: ", per_array)
 
         if (valid_data):
             # Calculate final kPa data

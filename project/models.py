@@ -1,6 +1,6 @@
 from project import db
 from datetime import datetime
-import pytz
+#import pytz
 
 
 
@@ -23,6 +23,7 @@ class Crop_Info(db.Model):
 #        crop_list = {"name": self.crop, "ideal_kpa": self.ideal_kpa, "dry_kpa":self.dry_kpa, "saturated_kpa": self.saturated_kpa}
 #        return crop_list
 
+#asdfsadfsdaf
 
 class Sensor_Info(db.Model):
     __tablename__ = 'sensor_info'
@@ -57,7 +58,7 @@ class Valve_Info(db.Model):
 class SensorReadings(db.Model):
     __tablename__ = 'sensorreadings'
     p_key = db.Column(db.Integer, primary_key=True)
-    recorded_at = db.Column(db.DateTime, nullable=False, default=datetime.now(pytz.timezone('America/Denver')), onupdate=datetime.now(pytz.timezone('America/Denver')))
+    recorded_at = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
     sensor_id = db.Column(db.String(64), db.ForeignKey('sensor_info.sensor_id'))
     kpa_value = db.Column(db.Integer)
     min_frequency = db.Column(db.NUMERIC(10,3))
@@ -74,3 +75,25 @@ class SensorReadings(db.Model):
         self.computed_frequency = reading_data["computed_frequency"]
         self.mean = reading_data["mean"]
         self.std_dev = reading_data["std_dev"]
+
+
+class WateringEvent(db.Model):
+    __tablename__ = 'wateringevents'
+    p_key = db.Column(db.Integer, primary_key=True)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
+    for_valve = db.Column(db.String(64), nullable=False)
+    open_time = db.Column(db.Integer, nullable=False)
+    state = db.Column(db.String, default='new')
+    water_start = db.Column(db.TIMESTAMP)
+    water_stop = db.Column(db.TIMESTAMP)
+    trigger_kpa = db.Column(db.Integer)
+
+    def __init__(self, for_valve, open_time, trigger_kpa):
+        self.for_valve = for_valve
+        self.open_time = open_time
+        self.trigger_kpa = trigger_kpa
+
+
+        
+
+
