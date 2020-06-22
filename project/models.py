@@ -4,16 +4,18 @@ from datetime import datetime
 
 
 
-class Crop_Info(db.Model):
-    __tablename__ = 'crop_info'
+class Crops(db.Model):
+    __tablename__ = 'crops'
 
-    crop = db.Column(db.String(64), primary_key=True)
+    crop_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    crop_name = db.Column(db.String)
     ideal_kpa = db.Column(db.Integer)
     dry_kpa = db.Column(db.Integer)
     saturated_kpa = db.Column(db.Integer)
+    sensors = db.relationship('Sensors', backref='crops', lazy=True)
 
-    def __init__(self, crop, ideal_kpa, dry_kpa, saturated_kpa):
-        self.crop = crop
+    def __init__(self, crop_name, ideal_kpa, dry_kpa, saturated_kpa):
+        self.crop_name = crop_name
         self.ideal_kpa = ideal_kpa
         self.dry_kpa = dry_kpa
         self.saturated_kpa = saturated_kpa
@@ -25,33 +27,36 @@ class Crop_Info(db.Model):
 
 #asdfsadfsdaf
 
-class Sensor_Info(db.Model):
-    __tablename__ = 'sensor_info'
+class Sensors(db.Model):
+    __tablename__ = 'sensors'
 
-    sensor_id = db.Column(db.String(64), primary_key=True)
+    sensor_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     configuration = db.Column(db.String(64), nullable=False)
-    crop = db.Column(db.String(64), db.ForeignKey('crop_info.crop'))
-    valve = db.Column(db.String(64), db.ForeignKey('valve_info.valve_id'))
+    crop_id = db.Column(db.Integer, db.ForeignKey('crops.crop_id'))
+    valve_id = db.Column(db.Integer, db.ForeignKey('valves.valve_id'))
     bcm_pin = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, sensor_id, configuration, crop, valve, bcm_pin):
-        self.sensor_id = sensor_id
+    def __init__(self, configuration, crop_id, valve_id, bcm_pin):
         self.configuration = configuration
-        self.crop = crop
-        self.valve = valve
-        self.bcm_pin = bcm_pin
-
-
-
-class Valve_Info(db.Model):
-    __tablename__ = 'valve_info'
-
-    valve_id = db.Column(db.String(64), primary_key=True)
-    bcm_pin = db.Column(db.Integer, nullable=False)
-
-    def __init__(self, valve_id, bcm_pin):
+        self.crop_id = crop_id
         self.valve_id = valve_id
         self.bcm_pin = bcm_pin
+
+
+class Valves(db.Model):
+    __tablename__ = 'valves'
+
+    valve_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    valve_name = db.Column(db.String)
+    relay_controller = db.Column(db.Integer, nullable=False)
+    sensors = db.relationship('Sensors', backref='valves', lazy=True)
+
+    def __init__(self, valve_name, relay_controller):
+        self.valve_name = valve_name
+        self.relay_controller = relay_controller
+
+    def __str__(self):
+        return "ID: {id}  Name: {name} Relay Controller: {rc}".format(id=self.valve_id, name=self.valve_name, rc=self.relay_controller)
 
 
 
@@ -59,7 +64,7 @@ class SensorReadings(db.Model):
     __tablename__ = 'sensorreadings'
     p_key = db.Column(db.Integer, primary_key=True)
     recorded_at = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
-    sensor_id = db.Column(db.String(64), db.ForeignKey('sensor_info.sensor_id'))
+    sensor_id = db.Column(db.String(64), db.ForeignKey('sensors.sensor_id'))
     kpa_value = db.Column(db.Integer)
     min_frequency = db.Column(db.NUMERIC(10,3))
     max_frequency = db.Column(db.NUMERIC(10,3))

@@ -1,45 +1,117 @@
-from flask import render_template, Blueprint, url_for, redirect
+from flask import render_template, Blueprint, url_for, redirect, jsonify, request
 from project import db
-from project.models import Valve_Info
+from project.models import Valves
 from project.valves.forms import AddValveForm, DeleteValveForm
 
 valve_data = Blueprint('valve_data', __name__)
 
-@valve_data.route('/valve/list')
-def list_valve_data():
 
-    valves = Valve_Info.query.all()
-    return render_template('list_valve_data.html', valves=valves)
+def load_data():
 
+    valve_data = []
+    valves = Valves.query.all()
+    for s in valves:
+        next_valve = s.__dict__
+        del next_valve["_sa_instance_state"]
+        valve_data.append(next_valve)
 
-@valve_data.route('/valve/add', methods=['GET','POST'])
-def add_valve_data():
+    print("Valve Data... ")
+    print(valve_data)
+    return valve_data
 
-    form = AddValveForm()
-
-    if form.validate_on_submit():
-        valve_id = form.valve_id.data
-        bcm_pin = form.bcm_pin.data
-        new_valve = Valve_Info(valve_id, bcm_pin)
-        db.session.add(new_valve)
-        db.session.commit()
-        return redirect(url_for('valve_data.list_valve_data'))
-
-    return render_template('add_valve_data.html', form=form)
+@valve_data.route('/valves/', methods=['GET'])
+def get_data():
+    print("IN getData for valves")
+    return jsonify(load_data())
 
 
-@valve_data.route('/valve/delete', methods=['GET','POST'])
-def delete_valve_data():
 
-    form = DeleteValveForm()
+# @valve_data.route('/valves/states/', methods=['GET'])
+# def get_valve_readings():
+# 
+#     readings = ValveReadings.query.all()
+# 
+#     sensor_readings = []
+# 
+#     for s in readings:
+#         next_reading = s.__dict__
+#         del next_reading["_sa_instance_state"]
+#         sensor_readings.append(next_reading)
+# 
+#     print("Valve Readings:")
+#     print(sensor_readings)
+# 
+#     return jsonify(sensor_readings)
+# 
 
-    if form.validate_on_submit():
-        valve_id = form.valve_id.data
-        valve = Valve_Info.query.get(valve_id)
-        db.session.delete(valve)
-        db.session.commit()
+@valve_data.route('/valves/', methods=['POST',])
+def insert_data():
+    print("Insert Valve Request...")
+    new_valve_data = request.json
+    print(new_valve_data)
 
-        return redirect(url_for('valve_data.list_valve_data'))
+    # Create the New Valve
 
-    return render_template('delete_valve_data.html', form=form)
+    new_valve = Valves(
+        valve_name=new_valve_data["valve_name"],
+        relay_controller=new_valve_data["relay_controller"]
+        )
+
+    db.session.add(new_valve)
+    db.session.commit()
+
+
+
+    ret_valve = {
+        "valve_id": new_valve.valve_id,
+        "valve_name": new_valve.valve_name,
+        "relay_controller": new_valve.relay_controller
+    }
+
+    return jsonify(ret_valve)
+    # return jsonify(success=True)
+
+
+
+
+@valve_data.route('/valves/<int:valve_id>', methods=['PUT',])
+def update_valve(valve_id):
+
+    print("UPDATE VALVE:")
+    #Find item to update
+    jsonrequest = request.json
+    print("json request")
+    print(jsonrequest)
+
+    valve = db.session.query(Valves).get(jsonrequest["valve_id"]);
+    print("Valve to be updated:")
+    print(valve)
+
+    update = {
+        "relay_controller" : jsonrequest["relay_controller"],
+        "valve_name" : jsonrequest["valve_name"]
+    }
+
+    print(update)
+
+    db.session.query(Valves).filter_by(valve_id=jsonrequest["valve_id"]).update(update)
+    db.session.commit();
+
+
+    return jsonify(request.json)
+    # return jsonify(success=True)
+
+
+@valve_data.route('/valves/<int:valve_id>', methods=['DELETE',])
+def delete_valve(valve_id):
+
+    valve = db.session.query(Valves).get(valve_id);
+
+    del_valve_return = db.session.delete(valve)
+    print("Return value  ", del_valve_return)
+
+    db.session.commit()
+
+    return jsonify(success=True)
+
 

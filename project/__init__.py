@@ -62,12 +62,14 @@ from project.core.views import core
 from project.crop_data.views import crop_data
 from project.sensors.views import sensor_data
 from project.valves.views import valve_data
+from project.system_testing.views import system_testing
 
 # Register the apps (Blueprints)
 app.register_blueprint(core)
 app.register_blueprint(crop_data)
 app.register_blueprint(sensor_data)
 app.register_blueprint(valve_data)
+app.register_blueprint(system_testing)
 
 
 

@@ -1,4 +1,30 @@
 from enum import Enum
+import piplates.RELAYplate as RELAY
+
+##############################################################################
+###### Customize the names of your relays by changing the labels below: ######
+labels = ['Relay 1', 'Relay 2', 'Relay 3', 'Relay 4', 'Relay 5', 'Relay 6', 'Relay 7']
+##############################################################################
+
+RELAY.RESET(ppADDR)
+status = range(7)
+for i in range(7):
+    status[i] = 'OFF'
+
+
+@app.route("/")
+@app.route("/<state>")
+def update_relay(state=None):
+    if state != None:
+        rly = int(state[0])  # parse relay number
+        action = state[2]  # parse action: 'n' for on and 'f' for off
+        if action == 'n':
+            RELAY.relayON(ppADDR, rly)
+        if action == 'f':
+            RELAY.relayOFF(ppADDR, rly)
+        # Update the relay status
+        mask = 1
+
 
 class valve:
 
@@ -7,19 +33,22 @@ class valve:
         OPEN   = 2
         ERROR  = 3
 
-    def __init__(self, id, bcmpin):
+    def __init__(self, id, relayID ):
         self.id = id
-        self.bcmpin = int(bcmpin)
+        self.relayID = int(relayID)
+        self.relayAddress = 0
+        self.relayMask = 1 << relayID
         # set up the pin for output
 
 
     def valve_status(self):
         # returns the current valve status open, closed, error
+        relayStates = RELAY.relaySTATE(self.relayAddress)
+        valveStatus = ValveStatus.CLOSED
+        if ((relayStates & self.relayMask) == 1):
+            valveStatus = ValveStatus.OPEN
 
-        print("Checking valve status for id {}:".format(self.id))
-        current_status = ValveStatus.CLOSED
-
-        return current_status
+        return valveStatus
 
 
     def open_valve(self):

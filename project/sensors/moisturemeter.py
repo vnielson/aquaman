@@ -13,6 +13,10 @@ class MoistureMeter:
         GPIO.setup(self.bcmpin, GPIO.IN)  # set input pin as an
         print("GPIO Pin " + str(self.bcmpin) + " set as input")
 
+    def __str__(self):
+        ret_string = "ID: {id}  BCM PIN: str(bcmpin)".format(id=self.id, bcmpin=self.bcmpin)
+        return ret_string
+
     def compute_kpa(self, frequency):
         # function to calculate the kPA value based on the input frequency.
 
@@ -46,7 +50,7 @@ class MoistureMeter:
         print("GPIO Pin " + str(self.bcmpin) + " set as input")
         # Set up callback for sensor input (rising edge)
 
-        print("Begin gathering sensor data for sensor " + self.id + "  " + str(self.bcmpin))
+        print("Begin gathering sensor data for sensor " + str(self.id) + "  " + str(self.bcmpin))
 
         print("self.bcmpin is ", self.bcmpin)
         state = GPIO.input(self.bcmpin)

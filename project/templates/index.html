@@ -1,7 +1,81 @@
 {%  extends "base.html" %}
 {% block content %}
-    <div class="jumbotron">
-        <h1>Aquaman Home Page!</h1>
-    </div>
+<!--    <div class="jumbotron">-->
+<!--        <h1>Aquaman Home Page!</h1>-->
+<!--    </div>-->
+
+
+<div class="container-fluid">
+  <div class="row">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <div class="sidebar-sticky pt-3">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link panel-nav" href="#" data-target="#panel-dashboard">
+              <span data-feather="home"></span>
+              Dashboard <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link panel-nav" href="#" data-target="#panel-sensors">
+              <span data-feather="file"></span>
+              Sensors
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link panel-nav" href="#" data-target="#panel-valves">
+              <span data-feather="shopping-cart"></span>
+              Valves
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link panel-nav" href="#" data-target="#panel-crops">
+              <span data-feather="users"></span>
+              Crops
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link panel-nav" href="#" data-target="#panel-system-test">
+              <span data-feather="bar-chart-2"></span>
+              System Testing
+            </a>
+          </li>
+        </ul>
+
+
+      </div>
+    </nav>
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+
+        <div class="  justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom" style="display:none">
+<!--        <div class="container"   style="display:none">-->
+            <p>Hello World</p>
+        </div>
+        {% include 'dashboard.html' %}
+        {% include 'sensors.html' %}
+        {% include 'valves.html' %}
+        {% include 'crops.html' %}
+        {% include 'system_testing.html' %}
+    </main>
+  </div>
+</div>
+
+
+    <!-- Sensor Panel Management -->
+    <script type="text/javascript" src="static/js/sensor_controller.js"></script>
+
+    <!-- Valve Panel Management -->
+    <script type="text/javascript" src="static/js/valve_controller.js"></script>
+
+    <!-- Crop Panel Management -->
+    <script type="text/javascript" src="static/js/crop_controller.js"></script>
+
+    <!-- System Test Page Management -->
+    <script type="text/javascript" src="static/js/system_test.js"></script>
+
+    <script type="module" src="/static/js/index.js" charset="utf-8"></script>
+
+
 {%  endblock %}
 

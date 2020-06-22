@@ -1,12 +1,12 @@
 from project import db
 from project.sensors import moisturemeter
-from project.models import Sensor_Info
+from project.models import Sensors
 from project.models import SensorReadings
 import RPi.GPIO as GPIO  # import RPi.GPIO module
 
 def main():
     print("main program for moisture reading")
-    sensors = Sensor_Info.query.all()
+    sensors = Sensors.query.all()
 
     #    print("By Row:")
     #    for row in sensorinfo:
