@@ -1,9 +1,20 @@
 from flask import render_template, Blueprint, url_for, redirect, jsonify, request
 from project import db
 from project.models import Valves
-from project.valves.forms import AddValveForm, DeleteValveForm
+from project.valves import valve
 
 valve_data = Blueprint('valve_data', __name__)
+
+
+def close_all_valves():
+    valves = Valves.query.all()
+    for v in valves:
+        valve_Instance = valve.valve(v.valve_id, v.relay_controller)
+        print("ValveItem: ")
+        print(valve_Instance)
+        close_valve_status = valve_Instance.close_valve()
+
+
 
 
 def load_data():
@@ -114,4 +125,57 @@ def delete_valve(valve_id):
 
     return jsonify(success=True)
 
+
+@valve_data.route('/valves/get_status/<int:valve_id>', methods=['GET'])
+def get_valve_status(valve_id):
+    print("IN get status for valve:")
+    print(valve_id)
+
+    Valve = Valves.query.get(valve_id)
+    s_data = Valve.__dict__
+    print(s_data)
+    print("Next Valve: {} {} {}".format(Valve.valve_id, Valve.valve_name, Valve.relay_controller))
+    valve_Instance = valve.valve(Valve.valve_id, Valve.relay_controller)
+    print("ValveItem: ")
+    print(valve_Instance)
+    valve_status = valve_Instance.valve_status()
+
+    ret_data = {}
+    ret_data["status"] = valve_status
+    print(ret_data)
+    return jsonify(ret_data)
+
+@valve_data.route('/valves/open/<int:valve_id>', methods=['GET'])
+def open_valve(valve_id):
+    print("IN OPEN valve:")
+    print(valve_id)
+
+    Valve = Valves.query.get(valve_id)
+    s_data = Valve.__dict__
+    print(s_data)
+    print("Next Valve: {} {} {}".format(Valve.valve_id, Valve.valve_name, Valve.relay_controller))
+    valve_Instance = valve.valve(Valve.valve_id, Valve.relay_controller)
+    print("ValveItem: ")
+    print(valve_Instance)
+    open_valve_status = valve_Instance.open_valve()
+
+    print(open_valve_status)
+    return jsonify(open_valve_status)
+
+@valve_data.route('/valves/close/<int:valve_id>', methods=['GET'])
+def close_valve(valve_id):
+    print("IN CLOSE valve:")
+    print(valve_id)
+
+    Valve = Valves.query.get(valve_id)
+    s_data = Valve.__dict__
+    print(s_data)
+    print("Next Valve: {} {} {}".format(Valve.valve_id, Valve.valve_name, Valve.relay_controller))
+    valve_Instance = valve.valve(Valve.valve_id, Valve.relay_controller)
+    print("ValveItem: ")
+    print(valve_Instance)
+    close_valve_status = valve_Instance.close_valve()
+
+    print(close_valve_status)
+    return jsonify(close_valve_status)
 

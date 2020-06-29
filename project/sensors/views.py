@@ -10,12 +10,25 @@ sensor_data = Blueprint('sensor_data', __name__)
 
 def load_data():
 
+    print("Load Data:")
+
     sensor_data = []
     sensors = Sensors.query.all()
     for s in sensors:
         next_sensor = s.__dict__
+        v_data = s.valves.__dict__
+        c_data = s.crops.__dict__
         del next_sensor["_sa_instance_state"]
-        sensor_data.append(next_sensor)
+        print(next_sensor)
+        row_data = {}
+        row_data["sensor_id"] = next_sensor["sensor_id"]
+        row_data["valve_id"] = next_sensor["valve_id"]
+        row_data["bcm_pin"] = next_sensor["bcm_pin"]
+        row_data["configuration"] = next_sensor["configuration"]
+        row_data["crop_id"] = next_sensor["crop_id"]
+        row_data["valve_name"] = v_data["valve_name"]
+        row_data["crop_name"] = c_data["crop_name"]
+        sensor_data.append(row_data)
 
     print("Sensor Data... ")
     print(sensor_data)
@@ -132,7 +145,9 @@ def get_sensor_reading(sensor_id):
     print(sensor_id)
 
     Sensor = Sensors.query.get(sensor_id)
-    print("Next Sensor: {} {} {}".format(Sensor.sensor_id, Sensor.crop, Sensor.bcm_pin))
+    s_data = Sensor.__dict__
+    print(s_data)
+    print("Next Sensor: {} {} {}".format(Sensor.sensor_id, Sensor.crops.crop_name, Sensor.bcm_pin))
     sensor = moisturemeter.MoistureMeter(Sensor.sensor_id, Sensor.bcm_pin)
     print("Sensor: ")
     print(sensor)
