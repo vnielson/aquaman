@@ -3,12 +3,28 @@ import datetime
 #from datetime import timezone
 import time
 #import pytz
+
+# from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask.json import JSONEncoder
+from datetime import date
 
 
-app = Flask(__name__)
+
+class MyJSONEncoder(JSONEncoder):
+    def default(self, o):
+        if isinstance(o, date):
+            return o.isoformat()
+
+        return super().default(o)
+
+class MyFlask(Flask):
+    json_encoder = MyJSONEncoder
+
+app = MyFlask(__name__)
+# app = Flask(__name__)
 
 # asdfdsf
 ####################################################################
@@ -62,7 +78,8 @@ from project.core.views import core
 from project.crop_data.views import crop_data
 from project.sensors.views import sensor_data
 from project.valves.views import valve_data
-from project.system_operation import system_initialization
+from project.wateringevents.views import watering_events
+from project.system_operation import system_operations
 from project.system_testing.views import system_testing
 
 # Register the apps (Blueprints)
@@ -70,9 +87,12 @@ app.register_blueprint(core)
 app.register_blueprint(crop_data)
 app.register_blueprint(sensor_data)
 app.register_blueprint(valve_data)
+app.register_blueprint(watering_events)
 app.register_blueprint(system_testing)
 
 # Initialize the System
-system_initialization.initialize_system()
+if os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+    system_operations.initialize_scheduler()
 
+system_operations.initialize_system()
 

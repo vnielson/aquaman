@@ -35,6 +35,12 @@
             </a>
           </li>
           <li class="nav-item">
+            <a class="nav-link panel-nav" href="#" data-target="#panel-watering-events">
+              <span data-feather="users"></span>
+              Watering Events
+            </a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link panel-nav" href="#" data-target="#panel-system-test">
               <span data-feather="bar-chart-2"></span>
               System Testing
@@ -56,17 +62,27 @@
         {% include 'sensors.html' %}
         {% include 'valves.html' %}
         {% include 'crops.html' %}
+        {% include 'watering_events.html' %}
         {% include 'system_testing.html' %}
     </main>
   </div>
 </div>
 
 
+    <!-- Charting Management -->
+    <script type="text/javascript" src="static/js/charting.js"></script>
+
+    <!-- Dashboard Panel Management -->
+    <script type="text/javascript" src="static/js/dashboard.js"></script>
+
     <!-- Sensor Panel Management -->
     <script type="text/javascript" src="static/js/sensor_controller.js"></script>
 
     <!-- Valve Panel Management -->
     <script type="text/javascript" src="static/js/valve_controller.js"></script>
+
+    <!-- Watering Events Management -->
+    <script type="text/javascript" src="static/js/watering_event_controller.js"></script>
 
     <!-- Crop Panel Management -->
     <script type="text/javascript" src="static/js/crop_controller.js"></script>

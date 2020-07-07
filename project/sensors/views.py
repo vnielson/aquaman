@@ -1,3 +1,4 @@
+import datetime
 from flask import render_template, Blueprint, url_for, redirect, request, jsonify
 from project import db
 from project.sensors import moisturemeter
@@ -22,6 +23,7 @@ def load_data():
         print(next_sensor)
         row_data = {}
         row_data["sensor_id"] = next_sensor["sensor_id"]
+        row_data["sensor_name"] = next_sensor["sensor_name"]
         row_data["valve_id"] = next_sensor["valve_id"]
         row_data["bcm_pin"] = next_sensor["bcm_pin"]
         row_data["configuration"] = next_sensor["configuration"]
@@ -30,8 +32,8 @@ def load_data():
         row_data["crop_name"] = c_data["crop_name"]
         sensor_data.append(row_data)
 
-    print("Sensor Data... ")
-    print(sensor_data)
+    # print("Sensor Data... ")
+    # print(sensor_data)
     return sensor_data
 
 @sensor_data.route('/sensors/', methods=['GET'])
@@ -44,17 +46,25 @@ def get_data():
 @sensor_data.route('/sensors/readings/', methods=['GET'])
 def get_sensor_readings():
 
-    readings = SensorReadings.query.all()
+    readings = SensorReadings.query.order_by(SensorReadings.recorded_at)
 
     sensor_readings = []
 
-    for s in readings:
-        next_reading = s.__dict__
+    for r in readings:
+        next_reading = r.__dict__
         del next_reading["_sa_instance_state"]
-        sensor_readings.append(next_reading)
+        sensor = Sensors.query.get(r.sensor_id)
+        # print("Retrieved Sensor:")
+        # print(sensor.__dict__)
+        rowData = next_reading
+        rowData["sensor_name"] = sensor.sensor_name
+        sensor_readings.append(rowData)
+        # print(next_reading)
 
-    print("Sensor Readings:")
-    print(sensor_readings)
+    # print("Sensor Readings:")
+    # print(sensor_readings)
+    # jsonData = jsonify(sensor_readings)
+    # print(jsonData)
 
     return jsonify(sensor_readings)
 
@@ -68,6 +78,7 @@ def insert_data():
     # Create the New Sensor
 
     new_sensor = Sensors(
+        sensor_name = new_sensor_data["sensor_name"],
         configuration=new_sensor_data["configuration"],
         crop_id=new_sensor_data["crop_id"],
         valve_id = new_sensor_data["valve_id"],
@@ -84,6 +95,7 @@ def insert_data():
 
     ret_sensor = {
         "sensor_id": new_sensor.sensor_id,
+        "sensor_name": new_sensor.sensor_name,
         "configuration": new_sensor.configuration,
         "crop_id": new_sensor.crop_id,
         "valve_id": new_sensor.valve_id,
@@ -110,6 +122,7 @@ def update_sensor(sensor_id):
     print(sensor)
 
     update = {
+        "sensor_name" : jsonrequest["sensor_name"],
         "configuration" : jsonrequest["configuration"],
         "crop_id": jsonrequest["crop_id"],
         "valve_id": jsonrequest["valve_id"],
@@ -156,3 +169,38 @@ def get_sensor_reading(sensor_id):
     print(sensor_reading_data)
     return jsonify(sensor_reading_data)
 
+
+def do_sensor_readings():
+    sensors = Sensors.query.all()
+
+    for sensor_data in sensors:
+        print("Next Sensor: {} {} {}".format(sensor_data.sensor_id, sensor_data.crops.crop_name, sensor_data.bcm_pin))
+        nxt_sensor = moisturemeter.MoistureMeter(sensor_data.sensor_id, sensor_data.bcm_pin)
+        print("get kPa for : ", sensor_data.sensor_id)
+        sensor_reading_data = nxt_sensor.get_kpa_value()
+        print("Return data: ", sensor_reading_data)
+
+        new_reading = SensorReadings(sensor_data.sensor_id, sensor_reading_data)
+
+
+        x = datetime.datetime.now()
+        print("Date:")
+        print(x)
+        print("New Reading")
+        print(new_reading.__dict__)
+
+        db.session.add(new_reading)
+        db.session.commit()
+
+def get_sensors():
+    sensors = Sensors.query.all()
+
+    return sensors
+
+# Returns the latest count sensor readings for a given sensor id
+def get_latest_sensor_readings(sensor_id, count):
+    print("in get latest sensor readings")
+
+    readings = SensorReadings.query.filter_by(sensor_id=sensor_id).order_by(SensorReadings.recorded_at.desc()).limit(count)
+
+    return readings

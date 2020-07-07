@@ -2,7 +2,7 @@ $(document).ready(function(){
     console.log("On document Ready function runningxxxxxx...");
 });
 
-var panelIds = ['#panel-dashboard', '#panel-sensors', '#panel-valves', '#panel-crops', '#panel-system-test']
+var panelIds = ['#panel-dashboard', '#panel-sensors', '#panel-valves', '#panel-crops', '#panel-watering-events','#panel-system-test']
 console.log("Index.js is running")
 
 function hidePanels(){
@@ -30,6 +30,10 @@ $(".panel-nav").on('click', function(e){
         systemTestController.initPanel();
     }
 
+    if (panelToShow == "#panel-dashboard"){
+        dashboardController.initPanel();
+    }
+
 });
 
 async function fetchCropandValveData() {
@@ -55,6 +59,7 @@ async function fetchCropandValveData() {
         $("#jsGridSensorInfo").jsGrid("fieldOption", "valve_id", "items", valveData);
 
         $("#jsGridSensorInfo").jsGrid("loadData");
+        $("#jsGridWateringEvents").jsGrid("loadData");
 
     } catch (error) {
         alert("Problem with refresh state")

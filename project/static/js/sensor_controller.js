@@ -139,6 +139,7 @@ var aqSensorController = (function(){
 
         fields: [
             { name: "sensor_id", type: "number", width: 20, title: "ID", filtering: false, readOnly: true},
+            { name: "sensor_name", type: "text", width: 20, title: "Sensor Name", filtering: false},
             { name: "configuration", type: "text", width: 20, title: "Config", filtering: false},
             {
                 name: "crop_id",

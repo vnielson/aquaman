@@ -70,7 +70,8 @@ class MoistureMeter:
         tstart = datetime.now()
         # print("Time Start : ", tstart)
 
-        sample_count = 500
+        # sample_count = 500
+        sample_count = 5
 
         per_array = np.zeros(sample_count)
 
@@ -92,7 +93,10 @@ class MoistureMeter:
                 per_array[i] = time_delta.total_seconds()
                 tstart = datetime.now()
 
-        # print("per_array: ", per_array)
+            channel = GPIO.wait_for_edge(self.bcmpin, GPIO.FALLING, timeout=5000)
+
+        # for x in range(0, sample_count):
+        #     print("per_array: " + str(x) + "  ", 1/per_array[i])
 
         if (valid_data):
             # Calculate final kPa data

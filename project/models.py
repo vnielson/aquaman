@@ -31,12 +31,14 @@ class Sensors(db.Model):
     __tablename__ = 'sensors'
 
     sensor_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    sensor_name = db.Column(db.String)
     configuration = db.Column(db.String(64), nullable=False)
     crop_id = db.Column(db.Integer, db.ForeignKey('crops.crop_id'))
     valve_id = db.Column(db.Integer, db.ForeignKey('valves.valve_id'))
     bcm_pin = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, configuration, crop_id, valve_id, bcm_pin):
+    def __init__(self, name, configuration, crop_id, valve_id, bcm_pin):
+        self.sensor_name = name
         self.configuration = configuration
         self.crop_id = crop_id
         self.valve_id = valve_id
@@ -86,17 +88,18 @@ class WateringEvent(db.Model):
     __tablename__ = 'wateringevents'
     p_key = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
-    for_valve = db.Column(db.String(64), nullable=False)
-    open_time = db.Column(db.Integer, nullable=False)
-    state = db.Column(db.String, default='new')
-    water_start = db.Column(db.TIMESTAMP)
-    water_stop = db.Column(db.TIMESTAMP)
+    valve_id = db.Column(db.Integer)
+    open_time = db.Column(db.Integer)
+    state = db.Column(db.String)
+    water_start = db.Column(db.DateTime)
+    water_stop = db.Column(db.DateTime)
     trigger_kpa = db.Column(db.Integer)
 
-    def __init__(self, for_valve, open_time, trigger_kpa):
-        self.for_valve = for_valve
-        self.open_time = open_time
+    def __init__(self, valve_id, water_start, trigger_kpa):
+        self.valve_id = valve_id
+        self.water_start = water_start
         self.trigger_kpa = trigger_kpa
+        self.state = 'IN PROGRESS'
 
 
         

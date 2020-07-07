@@ -1,7 +1,8 @@
 from flask import render_template, Blueprint, url_for, redirect, jsonify, request
 from project import db
-from project.models import Valves
+from project.models import Valves, WateringEvent
 from project.valves import valve
+from datetime import datetime
 
 valve_data = Blueprint('valve_data', __name__)
 
@@ -150,6 +151,20 @@ def open_valve(valve_id):
     print("IN OPEN valve:")
     print(valve_id)
 
+    open_valve_status = open_valve(valve_id)
+
+    print(open_valve_status)
+    return jsonify(open_valve_status)
+
+@valve_data.route('/valves/close/<int:valve_id>', methods=['GET'])
+def close_valve(valve_id):
+    print("IN CLOSE valve:")
+    print(valve_id)
+    close_valve_status = close_valve(valve_id)
+    return jsonify(close_valve_status)
+
+
+def open_valve(valve_id, record_event, trigger_kpa):
     Valve = Valves.query.get(valve_id)
     s_data = Valve.__dict__
     print(s_data)
@@ -159,14 +174,29 @@ def open_valve(valve_id):
     print(valve_Instance)
     open_valve_status = valve_Instance.open_valve()
 
-    print(open_valve_status)
-    return jsonify(open_valve_status)
+    def __init__(self, valve_id, water_start, trigger_kpa):
+        self.valve_id = valve_id
+        self.water_start = water_start
+        self.trigger_kpa = trigger_kpa
 
-@valve_data.route('/valves/close/<int:valve_id>', methods=['GET'])
-def close_valve(valve_id):
-    print("IN CLOSE valve:")
-    print(valve_id)
+    watering_event_id = 0
+    if (record_event):
+        watering_event = WateringEvent(Valve.valve_id, datetime.now(), trigger_kpa)
+        db.session.add(watering_event)
+        db.session.commit()
+        watering_event_id = watering_event.p_key
+        print("Record watering event:")
+        print(watering_event.__dict__)
+        print(watering_event_id)
 
+    ret_status = {}
+    ret_status["open_status"] = open_valve_status
+    ret_status["event_id"] = watering_event_id
+
+    return ret_status
+
+
+def close_valve(valve_id, record_event, event_id):
     Valve = Valves.query.get(valve_id)
     s_data = Valve.__dict__
     print(s_data)
@@ -177,5 +207,14 @@ def close_valve(valve_id):
     close_valve_status = valve_Instance.close_valve()
 
     print(close_valve_status)
-    return jsonify(close_valve_status)
+    if (record_event):
+        watering_event = WateringEvent.query.get(event_id)
+        watering_event.state = "COMPLETE"
+        watering_event.water_stop = datetime.now()
+        delta_time = (watering_event.water_stop - watering_event.water_start)
+        watering_event.open_time = delta_time.total_seconds()
+        print("Close Valve, Update Watering Event:")
+        print(watering_event.__dict__)
+        db.session.commit()
 
+    return close_valve_status
