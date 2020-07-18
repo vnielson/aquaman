@@ -89,7 +89,7 @@ var chartingController = (function(){
 // 7: (2) ["2020-06-30T12:58:56.664262", 0]
 // 8: (2) ["2020-06-30T12:59:56.672963", 0]
 // 9: (2) ["2020-06-30T13:00:56.664771", 0]
-            let rollPeriod = 5;
+            let rollPeriod = 1;
             charts[divId] =
                 new Dygraph(
                         document.getElementById(divId),
@@ -103,7 +103,8 @@ var chartingController = (function(){
                         xlabel: 'Date ',
                         strokeWidth: 1.5,
                         labels: labels,
-                        showLabelsOnHighlight: true
+                        showLabelsOnHighlight: true,
+                        connectSeparatedPoints: true
                         // highlightSeriesOpts: {
                         //     strokeWidth: 4,
                         //     strokeBorderWidth: 1,

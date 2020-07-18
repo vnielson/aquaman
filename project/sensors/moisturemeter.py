@@ -71,7 +71,7 @@ class MoistureMeter:
         # print("Time Start : ", tstart)
 
         # sample_count = 500
-        sample_count = 5
+        sample_count = 25
 
         per_array = np.zeros(sample_count)
 

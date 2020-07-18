@@ -151,7 +151,7 @@ def open_valve(valve_id):
     print("IN OPEN valve:")
     print(valve_id)
 
-    open_valve_status = open_valve(valve_id)
+    open_valve_status = open_valve(valve_id, False, 0)
 
     print(open_valve_status)
     return jsonify(open_valve_status)
@@ -160,7 +160,7 @@ def open_valve(valve_id):
 def close_valve(valve_id):
     print("IN CLOSE valve:")
     print(valve_id)
-    close_valve_status = close_valve(valve_id)
+    close_valve_status = close_valve(valve_id, False, 0)
     return jsonify(close_valve_status)
 
 

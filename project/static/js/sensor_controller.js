@@ -263,6 +263,7 @@ $(function() {
         },
         fields: [
             { name: "sensor_id", type: "number", width: 20, title: "ID"},
+            { name: "sensor_name", type: "text", width: 20, title: "Sensor Name", filtering: false},
             { name: "recorded_at", type: "date", width: 20, title: "Date Recorded"},
             { name: "kpa_value", type: "number", width: 20, title: "KPa Value"},
             { name: "computed_frequency", type: "number", width: 20, title: "Computed Freq"},

@@ -37,8 +37,8 @@ class Sensors(db.Model):
     valve_id = db.Column(db.Integer, db.ForeignKey('valves.valve_id'))
     bcm_pin = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, name, configuration, crop_id, valve_id, bcm_pin):
-        self.sensor_name = name
+    def __init__(self, sensor_name, configuration, crop_id, valve_id, bcm_pin):
+        self.sensor_name = sensor_name
         self.configuration = configuration
         self.crop_id = crop_id
         self.valve_id = valve_id
@@ -51,6 +51,7 @@ class Valves(db.Model):
     valve_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     valve_name = db.Column(db.String)
     relay_controller = db.Column(db.Integer, nullable=False)
+    # water_time = db.Column(db.Integer)
     sensors = db.relationship('Sensors', backref='valves', lazy=True)
 
     def __init__(self, valve_name, relay_controller):
@@ -66,7 +67,7 @@ class SensorReadings(db.Model):
     __tablename__ = 'sensorreadings'
     p_key = db.Column(db.Integer, primary_key=True)
     recorded_at = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
-    sensor_id = db.Column(db.String(64), db.ForeignKey('sensors.sensor_id'))
+    sensor_id = db.Column(db.Integer, db.ForeignKey('sensors.sensor_id'))
     kpa_value = db.Column(db.Integer)
     min_frequency = db.Column(db.NUMERIC(10,3))
     max_frequency = db.Column(db.NUMERIC(10,3))

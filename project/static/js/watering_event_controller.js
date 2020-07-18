@@ -23,8 +23,29 @@ $(function() {
                 });
                 return d.promise();
             },
+            deleteItem: function(item) {
+                var d = $.Deferred();
+                var url = "/watering_events/"+ item.p_key;
+                console.log(`Delete Watering Event : ${item.p_key}  :: URL: ${url}`)
+                $.ajax({
+                    url: url,
+                    data: item,
+                    type: "DELETE",
+                }).done(function(response) {
+                    // console.log("Delete Response");
+                    // console.log(response);
+                    if (response.success){
+                        console.log("Deleted success")
+                        d.resolve(response);
+                    }else {
+                        console.log(`Delete Failed with message: ${response.message}`)
+                        displayToast(response.type, response.title, response.message);
+                        d.reject(response);
+                    }
+                });
+                return d.promise();
+            },
         },
-
         fields: [
             { name: "p_key", type: "number", width: 20, title: "ID"},
             { name: "created", type: "date", width: 40, title: "Created"},

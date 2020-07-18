@@ -45,21 +45,33 @@ def get_data():
 
 @sensor_data.route('/sensors/readings/', methods=['GET'])
 def get_sensor_readings():
+    print("Sensor Readings:")
 
     readings = SensorReadings.query.order_by(SensorReadings.recorded_at)
 
     sensor_readings = []
 
+    first = True
+
+    sensors = Sensors.query.all()
+    sensor_data = {}
+    for s in sensors:
+        sensor_data[s.sensor_id] = s.sensor_name
+
+
     for r in readings:
         next_reading = r.__dict__
         del next_reading["_sa_instance_state"]
-        sensor = Sensors.query.get(r.sensor_id)
+        # if (first):
+        #     sensor = Sensors.query.get(r.sensor_id)
+        #     first = False
         # print("Retrieved Sensor:")
         # print(sensor.__dict__)
         rowData = next_reading
-        rowData["sensor_name"] = sensor.sensor_name
+        rowData["sensor_name"] = sensor_data[r.sensor_id]
         sensor_readings.append(rowData)
-        # print(next_reading)
+
+        print(rowData)
 
     # print("Sensor Readings:")
     # print(sensor_readings)
@@ -76,6 +88,8 @@ def insert_data():
     print(new_sensor_data)
 
     # Create the New Sensor
+
+    print(new_sensor_data)
 
     new_sensor = Sensors(
         sensor_name = new_sensor_data["sensor_name"],

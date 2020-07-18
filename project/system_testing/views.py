@@ -17,7 +17,7 @@ def test_do_watering():
 
     print("IN TEST DO WATERING")
 
-    system_operations.do_watering()
+    system_operations.do_watering(True)
 
     return jsonify(True)
 

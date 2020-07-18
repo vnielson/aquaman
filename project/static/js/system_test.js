@@ -1,5 +1,22 @@
 var systemTestController = (function (){
 
+    $("#test-do-watering").on('click', function(e){
+       console.log("In do click......................")
+        e.preventDefault();
+        let testDoWateringUrl = "/test_do_watering";
+
+        fetch(testDoWateringUrl)
+            .then( (resp) => resp.json())
+            .then( function(data){
+                console.log("Returned Test Do Watering Data:")
+                console.log(data)
+
+            })
+            .catch( function(error){
+                console.log("Error in test do watering");
+            });
+    });
+
     function fetchValveData(){
         console.log("Fetch Valve Data")
         let valveDataUrl = "/valves/";
