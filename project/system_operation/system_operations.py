@@ -9,8 +9,14 @@ aqua_sched = BackgroundScheduler(daemon=True)
 
 def initialize_scheduler():
     # aqua_sched.add_job(do_moister_readings, 'interval', seconds=30)
-    aqua_sched.add_job(do_moister_readings, 'interval', minutes=10)
-    aqua_sched.add_job(func=do_watering, args=[False], trigger='interval', minutes=20)
+    do_moister_readings_job =aqua_sched.add_job(do_moister_readings, 'interval', minutes=10)
+    print("Do moisture reading Job info:")
+    print(do_moister_readings_job.name)
+    print(do_moister_readings_job)
+    do_watering_job = aqua_sched.add_job(func=do_watering, args=[False], trigger='interval', minutes=60)
+    print("Do Watering Job info:")
+    print(do_watering_job.name)
+    print(do_watering_job)
     aqua_sched.start()
 
 
@@ -34,7 +40,7 @@ def get_average_kpa(sensor_readings):
     reading_count = 0
     total_kpa = 0
     for sr in sensor_readings:
-        print("Next KPA: " + str(sr.kpa_value))
+        # print("Next KPA: " + str(sr.kpa_value))
         total_kpa += sr.kpa_value
         reading_count += 1
 
@@ -68,11 +74,15 @@ def water_crop(crop, valve_id, trigger_kpa):
     open_status = valves.open_valve(valve_id, True, trigger_kpa)
     print("Open status returned")
     print(open_status)
-    close_valve_date_time = datetime.datetime.now() + datetime.timedelta(minutes = 2)
+    close_valve_date_time = datetime.datetime.now() + datetime.timedelta(minutes = 12)
     # aqua_sched.add_date_job(func=valves.close_valve, args=valve_id, date=close_valve_date_time)
-    aqua_sched.add_job(func=valves.close_valve,
+    end_watering_job = aqua_sched.add_job(func=valves.close_valve,
                        args=[valve_id,True,open_status["event_id"]], trigger='date',
                        run_date=close_valve_date_time)
+    print("END Watering Job info:")
+    print(close_valve_date_time)
+    print(end_watering_job.name)
+    print(end_watering_job)
 
 
 def in_watering_window():
@@ -96,7 +106,6 @@ def in_watering_window():
     print("Time now hour is: ")
     print(time_now.hour)
 
-    #Simple first version, returns true always
     return in_window
 
 
@@ -108,6 +117,8 @@ def do_watering(test_mode):
     print(test_mode)
     print("====================================")
 
+    watering_initiated = False
+
     if (in_watering_window() or test_mode):
         all_sensors = sensors.get_sensors()
 
@@ -115,12 +126,17 @@ def do_watering(test_mode):
             print("Process sensor: " )
             print(nxt_sensor.__dict__)
             # Get latest readings and determine an average current KPa value
-            readings = sensors.get_latest_sensor_readings(nxt_sensor.sensor_id, 5)
+            readings = sensors.get_latest_sensor_readings(nxt_sensor.sensor_id, 3)
             print(readings)
             avg_kpa = get_average_kpa(readings)
+            print(avg_kpa)
             crop = nxt_sensor.crops
             print("Crop for sensor is:")
             print(crop.__dict__)
             if (crop_needs_watering(crop, avg_kpa, test_mode)):
-                water_crop(crop, nxt_sensor.valve_id, avg_kpa)
+                if (watering_initiated):
+                    print("Not watering due to watering in progress")
+                else:
+                    water_crop(crop, nxt_sensor.valve_id, avg_kpa)
+                    watering_initiated = True
 

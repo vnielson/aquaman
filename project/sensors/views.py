@@ -58,6 +58,7 @@ def get_sensor_readings():
     for s in sensors:
         sensor_data[s.sensor_id] = s.sensor_name
 
+    print(sensor_data)
 
     for r in readings:
         next_reading = r.__dict__
@@ -67,11 +68,16 @@ def get_sensor_readings():
         #     first = False
         # print("Retrieved Sensor:")
         # print(sensor.__dict__)
-        rowData = next_reading
-        rowData["sensor_name"] = sensor_data[r.sensor_id]
-        sensor_readings.append(rowData)
+        # print(next_reading)
+        if r.sensor_id in sensor_data:
+            rowData = next_reading
+            rowData["sensor_name"] = sensor_data[r.sensor_id]
+            sensor_readings.append(rowData)
+        else:
+            print("Sensor ID NOT FOUND")
+            print(r.sensor_id)
 
-        print(rowData)
+        # print(rowData)
 
     # print("Sensor Readings:")
     # print(sensor_readings)
@@ -171,15 +177,7 @@ def get_sensor_reading(sensor_id):
     print("IN getreading for sensor:")
     print(sensor_id)
 
-    Sensor = Sensors.query.get(sensor_id)
-    s_data = Sensor.__dict__
-    print(s_data)
-    print("Next Sensor: {} {} {}".format(Sensor.sensor_id, Sensor.crops.crop_name, Sensor.bcm_pin))
-    sensor = moisturemeter.MoistureMeter(Sensor.sensor_id, Sensor.bcm_pin)
-    print("Sensor: ")
-    print(sensor)
-    sensor_reading_data = sensor.get_kpa_value()
-
+    sensor_reading_data = get_sensor_reading(sensor_id)
     print(sensor_reading_data)
     return jsonify(sensor_reading_data)
 
@@ -188,14 +186,13 @@ def do_sensor_readings():
     sensors = Sensors.query.all()
 
     for sensor_data in sensors:
-        print("Next Sensor: {} {} {}".format(sensor_data.sensor_id, sensor_data.crops.crop_name, sensor_data.bcm_pin))
+        # print("Next Sensor: {} {} {}".format(sensor_data.sensor_id, sensor_data.crops.crop_name, sensor_data.bcm_pin))
         nxt_sensor = moisturemeter.MoistureMeter(sensor_data.sensor_id, sensor_data.bcm_pin)
-        print("get kPa for : ", sensor_data.sensor_id)
+        # print("get kPa for : ", sensor_data.sensor_id)
         sensor_reading_data = nxt_sensor.get_kpa_value()
-        print("Return data: ", sensor_reading_data)
+        # print("Return data: ", sensor_reading_data)
 
         new_reading = SensorReadings(sensor_data.sensor_id, sensor_reading_data)
-
 
         x = datetime.datetime.now()
         print("Date:")
@@ -218,3 +215,15 @@ def get_latest_sensor_readings(sensor_id, count):
     readings = SensorReadings.query.filter_by(sensor_id=sensor_id).order_by(SensorReadings.recorded_at.desc()).limit(count)
 
     return readings
+
+def get_sensor_reading(sensor_id):
+    Sensor = Sensors.query.get(sensor_id)
+    s_data = Sensor.__dict__
+    # print(s_data)
+    # print("Next Sensor: {} {} {}".format(Sensor.sensor_id, Sensor.crops.crop_name, Sensor.bcm_pin))
+    sensor = moisturemeter.MoistureMeter(Sensor.sensor_id, Sensor.bcm_pin)
+    # print("Sensor: ")
+    # print(sensor)
+    sensor_reading_data = sensor.get_kpa_value()
+
+    return sensor_reading_data

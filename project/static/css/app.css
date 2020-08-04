@@ -101,3 +101,12 @@ body {
   border-color: transparent;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
 }
+
+
+.valve-watering-chart   {
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        top: 40px;
+        bottom: 10px;
+      }
