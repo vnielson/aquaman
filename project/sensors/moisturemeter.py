@@ -8,10 +8,10 @@ class MoistureMeter:
         self.id = id
         self.bcmpin = int(bcmpin)
         # set up the pin for input
-        print("GPIO BCM Value is : ", GPIO.BCM)
+        # print("GPIO BCM Value is : ", GPIO.BCM)
         GPIO.setmode(GPIO.BCM)  # choose BCM or BOARD
         GPIO.setup(self.bcmpin, GPIO.IN)  # set input pin as an
-        print("GPIO Pin " + str(self.bcmpin) + " set as input")
+        # print("GPIO Pin " + str(self.bcmpin) + " set as input")
 
     def __str__(self):
         ret_string = "ID: {id}  BCM PIN: str(bcmpin)".format(id=self.id, bcmpin=self.bcmpin)
@@ -20,7 +20,7 @@ class MoistureMeter:
     def compute_kpa(self, frequency):
         # function to calculate the kPA value based on the input frequency.
 
-        print("compute_kpa input frequency is : ", frequency)
+        # print("compute_kpa input frequency is : ", frequency)
 
         if frequency > 6430:
             kPa = 0
@@ -46,15 +46,15 @@ class MoistureMeter:
     def get_kpa_value(self):
         # set up the pin for input
         GPIO.setmode(GPIO.BCM)  # choose BCM or BOARD
-        GPIO.setup(self.bcmpin, GPIO.IN)  # set input pin as an
-        print("GPIO Pin " + str(self.bcmpin) + " set as input")
+        GPIO.setup(self.bcmpin, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # set input pin as an
+        # print("GPIO Pin " + str(self.bcmpin) + " set as input")
         # Set up callback for sensor input (rising edge)
 
-        print("Begin gathering sensor data for sensor " + str(self.id) + "  " + str(self.bcmpin))
+        # print("Begin gathering sensor data for sensor " + str(self.id) + "  " + str(self.bcmpin))
 
-        print("self.bcmpin is ", self.bcmpin)
+        # print("self.bcmpin is ", self.bcmpin)
         state = GPIO.input(self.bcmpin)
-        print("State is ", state)
+        # print("State is ", state)
         # wait for first rising edge detection
 
         # wait for up to 5 seconds for a rising edge (timeout is in milliseconds)
@@ -62,8 +62,8 @@ class MoistureMeter:
 
         if channel is None:
             print('Timeout occurred')
-        else:
-            print('Edge detected on channel', channel)
+        # else:
+        #     print('Edge detected on channel', channel)
 
         # start timer to begin measuring
 
@@ -71,52 +71,126 @@ class MoistureMeter:
         # print("Time Start : ", tstart)
 
         # sample_count = 500
-        sample_count = 25
-
-        per_array = np.zeros(sample_count)
+        sample_count = 5000
 
         valid_data = True
-
-        # now loop, repeatedly looking for rising edge and timing info
         for i in range(0, sample_count):
             channel = GPIO.wait_for_edge(self.bcmpin, GPIO.RISING, timeout=5000)
-
+            channel = GPIO.wait_for_edge(self.bcmpin, GPIO.FALLING, timeout=5000)
             if channel is None:
                 print('Timeout occurred, abort')
                 kPa = -1
                 valid_data = False
                 break
-            else:
-                tend = datetime.now()
-                time_delta = tend - tstart
-                # print("Delta for this loop: ",time_delta.total_seconds())
-                per_array[i] = time_delta.total_seconds()
-                tstart = datetime.now()
 
-            channel = GPIO.wait_for_edge(self.bcmpin, GPIO.FALLING, timeout=5000)
-
-        # for x in range(0, sample_count):
-        #     print("per_array: " + str(x) + "  ", 1/per_array[i])
+        tend = datetime.now()
+        time_delta = tend - tstart
 
         if (valid_data):
-            # Calculate final kPa data
-            total_time_measured = per_array.sum()
-
-            period = total_time_measured / sample_count
-            frequency = 1 / period
-
+            # print("Compute Results")
+            # print( time_delta.total_seconds())
+            avg_period = time_delta.total_seconds() / float(sample_count)
+            # print(avg_period)
+            avg_frequency = 1.0/avg_period
+            # print(avg_frequency)
             # print("calculated period : ", period)
-            kPa = self.compute_kpa(frequency)
+            kPa = self.compute_kpa(avg_frequency)
 
             # compute some statistics that might help understand how well the system is working
-            min_frequency = 1.0 / per_array.max()
-            max_frequency = 1.0 / per_array.min()
-            mean = 1 / per_array.mean()
-            stddev = per_array.std()
+            min_frequency = 0.0
+            max_frequency = 0.0
+            mean = 0.0
+            stddev = 0.0
+        else:
+            kPa = 0.0
+            avg_frequency = 0.0
+            min_frequency = 0.0
+            max_frequency = 0.0
+            mean = 0.0
+            stddev = 0.0
 
-        return_data = {"kpa_value": kPa, "computed_frequency": frequency, "min_frequency": min_frequency,
+        return_data = {"data_valid": valid_data,"kpa_value": kPa, "computed_frequency": avg_frequency, "min_frequency": min_frequency,
                        "max_frequency": max_frequency, "mean": mean, "std_dev": stddev}
 
 
 
         return return_data
+
+
+    # def get_kpa_value(self):
+    #     # set up the pin for input
+    #     GPIO.setmode(GPIO.BCM)  # choose BCM or BOARD
+    #     GPIO.setup(self.bcmpin, GPIO.IN)  # set input pin as an
+    #     print("GPIO Pin " + str(self.bcmpin) + " set as input")
+    #     # Set up callback for sensor input (rising edge)
+    #
+    #     print("Begin gathering sensor data for sensor " + str(self.id) + "  " + str(self.bcmpin))
+    #
+    #     print("self.bcmpin is ", self.bcmpin)
+    #     state = GPIO.input(self.bcmpin)
+    #     print("State is ", state)
+    #     # wait for first rising edge detection
+    #
+    #     # wait for up to 5 seconds for a rising edge (timeout is in milliseconds)
+    #     channel = GPIO.wait_for_edge(self.bcmpin, GPIO.RISING, timeout=5000)
+    #
+    #     if channel is None:
+    #         print('Timeout occurred')
+    #     else:
+    #         print('Edge detected on channel', channel)
+    #
+    #     # start timer to begin measuring
+    #
+    #     tstart = datetime.now()
+    #     # print("Time Start : ", tstart)
+    #
+    #     # sample_count = 500
+    #     sample_count = 5
+    #
+    #     per_array = np.zeros(sample_count)
+    #
+    #     valid_data = True
+    #
+    #     # now loop, repeatedly looking for rising edge and timing info
+    #     for i in range(0, sample_count):
+    #         channel = GPIO.wait_for_edge(self.bcmpin, GPIO.RISING, timeout=5000)
+    #
+    #         if channel is None:
+    #             print('Timeout occurred, abort')
+    #             kPa = -1
+    #             valid_data = False
+    #             break
+    #         else:
+    #             tend = datetime.now()
+    #             time_delta = tend - tstart
+    #             # print("Delta for this loop: ",time_delta.total_seconds())
+    #             per_array[i] = time_delta.total_seconds()
+    #             tstart = datetime.now()
+    #
+    #         channel = GPIO.wait_for_edge(self.bcmpin, GPIO.FALLING, timeout=5000)
+    #
+    #     # for x in range(0, sample_count):
+    #     #     print("per_array: " + str(x) + "  ", 1/per_array[i])
+    #
+    #     if (valid_data):
+    #         # Calculate final kPa data
+    #         total_time_measured = per_array.sum()
+    #
+    #         period = total_time_measured / sample_count
+    #         frequency = 1 / period
+    #
+    #         # print("calculated period : ", period)
+    #         kPa = self.compute_kpa(frequency)
+    #
+    #         # compute some statistics that might help understand how well the system is working
+    #         min_frequency = 1.0 / per_array.max()
+    #         max_frequency = 1.0 / per_array.min()
+    #         mean = 1 / per_array.mean()
+    #         stddev = per_array.std()
+    #
+    #     return_data = {"kpa_value": kPa, "computed_frequency": frequency, "min_frequency": min_frequency,
+    #                    "max_frequency": max_frequency, "mean": mean, "std_dev": stddev}
+    #
+    #
+    #
+    #     return return_data

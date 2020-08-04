@@ -151,7 +151,7 @@ var systemTestController = (function (){
         var markUp = `<div class="col">
                         <div class="card" style="width: 24rem;">
                         <div class="card-body">
-                            <h5 class="card-title">Sensor ${s.sensor_id}</h5>
+                            <h5 class="card-title">Sensor ${s.sensor_name}</h5>
                             <table class="table table-sm">
                               <thead>
                                 <tr>
