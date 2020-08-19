@@ -66,6 +66,7 @@ class Valves(db.Model):
 class SensorReadings(db.Model):
     __tablename__ = 'sensorreadings'
     p_key = db.Column(db.Integer, primary_key=True)
+    data_valid = db.Column(db.Boolean, default=True)
     recorded_at = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
     sensor_id = db.Column(db.Integer, db.ForeignKey('sensors.sensor_id'))
     kpa_value = db.Column(db.Integer)
@@ -77,6 +78,7 @@ class SensorReadings(db.Model):
 
     def __init__(self, sensor_id, reading_data):
         self.sensor_id = sensor_id
+        self.data_valid = reading_data["data_valid"]
         self.kpa_value = reading_data["kpa_value"]
         self.min_frequency = reading_data["min_frequency"]
         self.max_frequency = reading_data["max_frequency"]
@@ -105,4 +107,24 @@ class WateringEvent(db.Model):
 
         
 
+class WeatherData(db.Model):
+    __tablename__ = 'weatherdata'
+    p_key = db.Column(db.Integer, primary_key=True)
+    sensor_id = db.Column(db.String)
+    timestamp = db.Column(db.DateTime, nullable=False)
+    temperature = db.Column(db.NUMERIC(10,3))
+    pressure = db.Column(db.NUMERIC(10,3))
+    humidity = db.Column(db.NUMERIC(10,3))
+
+    def __init__(self, weather_data):
+        # self.sensor_id = weather_data["id"]
+        self.sensor_id = "BME_1"
+        self.timestamp = weather_data["timestamp"]
+        self.temperature = weather_data["temp"]
+        self.pressure = weather_data["pressure"]
+        self.humidity = weather_data["humidity"]
+
+
+    def __str__(self):
+        return "Timestamp: {timestammp} Temperature: {temp} Pressure:{pressure} Humidity:{humidity}".format(timestamp=self.timestamp, temp=self.temperature, pressure=self.pressure, humidity=self.humidity)
 

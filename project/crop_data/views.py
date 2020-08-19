@@ -2,6 +2,7 @@ from flask import render_template, Blueprint, url_for, redirect, jsonify, reques
 from project import db
 from project.models import Crops
 from project.crop_data.forms import AddCropForm, DeleteCropForm
+from project.core.aqualogger import croplog
 
 crop_data = Blueprint('crop_data', __name__)
 
@@ -15,21 +16,21 @@ def load_data():
         del next_crop["_sa_instance_state"]
         crop_data.append(next_crop)
 
-    print("Crop Data... ")
-    print(crop_data)
+    croplog.debug("Crop Data... ")
+    croplog.debug(crop_data)
     return crop_data
 
 @crop_data.route('/crops/', methods=['GET'])
 def get_data():
-    print("IN getData for crops")
+    croplog.debug("IN getData for crops")
     return jsonify(load_data())
 
 
 @crop_data.route('/crops/', methods=['POST',])
 def insert_data():
-    print("Insert Crop Request...")
+    croplog.debug("Insert Crop Request...")
     new_crop_data = request.json
-    print(new_crop_data)
+    croplog.debug(new_crop_data)
 
     # Create the New Crop
 
@@ -65,15 +66,15 @@ def insert_data():
 @crop_data.route('/crops/<int:crop_id>', methods=['PUT',])
 def update_crop(crop_id):
 
-    print("UPDATE VALVE:")
+    croplog.debug("UPDATE VALVE:")
     #Find item to update
     jsonrequest = request.json
-    print("json request")
-    print(jsonrequest)
+    croplog.debug("json request")
+    croplog.debug(jsonrequest)
 
     crop = db.session.query(Crops).get(jsonrequest["crop_id"]);
-    print("Crop to be updated:")
-    print(crop)
+    croplog.debug("Crop to be updated:")
+    croplog.debug(crop)
 
     update = {
         "crop_name" : jsonrequest["crop_name"],
@@ -83,7 +84,7 @@ def update_crop(crop_id):
     }
 
 
-    print(update)
+    croplog.debug(update)
 
     db.session.query(Crops).filter_by(crop_id=jsonrequest["crop_id"]).update(update)
     db.session.commit();
@@ -99,7 +100,7 @@ def delete_crop(crop_id):
     crop = db.session.query(Crops).get(crop_id);
 
     del_crop_return = db.session.delete(crop)
-    print("Return value  ", del_crop_return)
+    croplog.debug("Return value  ", del_crop_return)
 
     db.session.commit()
 

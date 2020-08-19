@@ -10,6 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask.json import JSONEncoder
 from datetime import date
+from project.core.aqualogger import aqlog
 
 
 
@@ -55,18 +56,7 @@ def format_datetime(value, format="%d %b %Y %I:%M %p"):
     if value is None:
         return ""
 
-    print(value)
-#    mytimezone = pytz.timezone("America/Denver")  # my current timezone
-#    dtobj4 = mytimezone.localize(value)  # localize function
-
- #   tz_time = dtobj4.astimezone(pytz.timezone("America/Denver"))  # astimezone method
-  #  print(tz_time)
-
-
-#    print("Value: {}".format(value))
-#    print("Value.tzinfo {}".format(value.tzinfo))
-
-#    return tz_time.strftime(format)
+    aqlog.debug(value)
     return value.strftime(format)
 
 ####################################################################
@@ -81,6 +71,8 @@ from project.valves.views import valve_data
 from project.wateringevents.views import watering_events
 from project.system_operation import system_operations
 from project.system_testing.views import system_testing
+from project.logviewer.views import log_viewer
+from project.weather.views import weather
 
 # Register the apps (Blueprints)
 app.register_blueprint(core)
@@ -89,10 +81,11 @@ app.register_blueprint(sensor_data)
 app.register_blueprint(valve_data)
 app.register_blueprint(watering_events)
 app.register_blueprint(system_testing)
+app.register_blueprint(log_viewer)
+app.register_blueprint(weather)
 
 # Initialize the System
 if os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+    system_operations.initialize_system()
     system_operations.initialize_scheduler()
-
-system_operations.initialize_system()
 

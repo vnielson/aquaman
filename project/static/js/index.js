@@ -2,7 +2,7 @@ $(document).ready(function(){
     console.log("On document Ready function runningxxxxxx...");
 });
 
-var panelIds = ['#panel-dashboard', '#panel-sensors', '#panel-valves', '#panel-crops', '#panel-watering-events','#panel-system-test']
+var panelIds = ['#panel-dashboard', '#panel-sensors', '#panel-valves', '#panel-crops', '#panel-watering-events','#panel-system-test', '#panel-log-viewer', '#panel-weather']
 console.log("Index.js is running")
 
 function hidePanels(){
@@ -32,6 +32,10 @@ $(".panel-nav").on('click', function(e){
 
     if (panelToShow == "#panel-dashboard"){
         dashboardController.initPanel();
+    }
+
+    if (panelToShow == "#panel-weather"){
+        weatherController.initPanel();
     }
 
 });

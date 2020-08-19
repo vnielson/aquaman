@@ -11,6 +11,42 @@ var dashboardController = (function (){
 
     var valves = [];
 
+    function formatDate(item, options){
+        const dateRecorded = new Date(item);
+        let day = dateRecorded.getDate();
+        let month = dateRecorded.getMonth() + 1;
+        let timeOfDay = dateRecorded.toLocaleTimeString('en-US');
+        let formatedDate = `${month}/${day}&nbsp;&nbsp;&nbsp;${timeOfDay}`
+        if (options["timeOnly"]){
+            formatedDate = `${timeOfDay}`
+        }
+        return formatedDate;
+    }
+
+
+    function fetchWeatherData(){
+        console.log("Fetch Weather Data")
+        let weatherDataUrl = "/weather/current";
+
+        fetch(weatherDataUrl)
+            .then( (resp) => resp.json())
+            .then( function(data){
+                console.log("Returned Weather Data (Dashboard):")
+                console.log(data)
+                console.log(data["temp"])
+                let options = {timeOnly:true}
+                let formatedDate = formatDate(data["timestamp"], options);
+                $("#w-time-stamp").text(formatedDate);
+                $("#w-temperature").text(data["temp"].toFixed(2) + " degF");
+                $("#w-humidity").text(data["humidity"].toFixed(2) + "% rH");
+                $("#w-pressure").text(data["pressure"].toFixed(3) + " inHG");
+            })
+            .catch( function(error){
+                console.log("Error with weather Data (Dashboard)")
+
+            });
+    }
+
     function fetchCropData(){
         console.log("Fetch Crop Data")
         let cropDataUrl = "/crops/";
@@ -18,8 +54,8 @@ var dashboardController = (function (){
         fetch(cropDataUrl)
             .then( (resp) => resp.json())
             .then( function(data){
-                console.log("Returned Crop Data (Dashboard):")
-                console.log(data)
+                // console.log("Returned Crop Data (Dashboard):")
+                // console.log(data)
                 cropData = data;
 
             })
@@ -46,8 +82,8 @@ var dashboardController = (function (){
 
     function makeIndividualSensorReadingChart(sensor){
 
-        console.log("In make individual chart for :" );
-        console.log(sensor);
+        // console.log("In make individual chart for :" );
+        // console.log(sensor);
 
         let crop = cropData.filter(c => c.crop_id == sensor.crop_id);
 
@@ -74,7 +110,7 @@ var dashboardController = (function (){
             rowData[4] = crop[0]["saturated_kpa"];
             sensorReadingData.push(rowData)
         });
-        console.log(thisSensorReadingSet);
+        // console.log(thisSensorReadingSet);
 
         let seriesData = [];
         seriesData[0] = (sensor.sensor_name);
@@ -115,16 +151,16 @@ var dashboardController = (function (){
             // rowData[2] = kpa - 5
             sensorReadingData.push(rowData)
         })
-        console.log("Final Sensor Chart Data:")
-        console.log(sensorReadingData);
+        // console.log("Final Sensor Chart Data:")
+        // console.log(sensorReadingData);
         let seriesData = [];
         sensors.forEach(s => {
             seriesData.push(s.sensor_name);
         });
         chartingController.buildChart("sensorReadingsAll", sensorReadingData, seriesData, "All Sensors", "Kpa")
         makeSensorChartTimings["makeSensorReadingsChart"] =  performance.now();
-        console.log("Chart Timings:")
-        console.log(makeSensorChartTimings);
+        // console.log("Chart Timings:")
+        // console.log(makeSensorChartTimings);
     }
 
     function fetchSensorData(){
@@ -154,13 +190,13 @@ var dashboardController = (function (){
 
     function fetchSensorReadingData(){
         console.log(`Fetch Sensor Reading Data`)
-        let sensorReadingsUrl = "/sensors/readings/";
+        let sensorReadingsUrl = "/sensors/readings?days=14";
 
         fetch(sensorReadingsUrl)
             .then( (resp) => resp.json())
             .then( function(data){
-                console.log("Returned Sensor Reading Data (Dashboard):")
-                console.log(data)
+                // console.log("Returned Sensor Reading Data (Dashboard):")
+                // console.log(data)
                 sensorReadings = data;
                 makeSensorChartTimings["fetchSensorReadingData"] =  performance.now();
                 // makeAllSensorReadingChart();
@@ -242,8 +278,8 @@ var dashboardController = (function (){
         fetch(valveDataUrl)
             .then( (resp) => resp.json())
             .then( function(data){
-                console.log("Returned Valve Data (Dashboard):")
-                console.log(data)
+                // console.log("Returned Valve Data (Dashboard):")
+                // console.log(data)
                 valves = []
                 data.forEach(v => {
                    valves.push(v);
@@ -302,6 +338,7 @@ var dashboardController = (function (){
             fetchSensorReadingData();
             fetchValveData();
             fetchCropData();
+            fetchWeatherData();
             // sensorData = "Date,Temperature\n" +
             //                 "2008-05-07,75\n" +
             //                 "2008-05-08,70\n" +

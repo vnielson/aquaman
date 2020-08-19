@@ -1,5 +1,16 @@
 $(function() {
     console.log("WE Controller Running....")
+    function formatDate(item, options){
+        const dateRecorded = new Date(item);
+        let day = dateRecorded.getDate();
+        let month = dateRecorded.getMonth() + 1;
+        let timeOfDay = dateRecorded.toLocaleTimeString('en-US');
+        let formatedDate = `${month}/${day}&nbsp;&nbsp;&nbsp;${timeOfDay}`
+        if (options["timeOnly"]){
+            formatedDate = `${timeOfDay}`
+        }
+        return formatedDate;
+    }
     $("#jsGridWateringEvents").jsGrid({
         width: "100%",
         inserting: false,
@@ -47,14 +58,37 @@ $(function() {
             },
         },
         fields: [
-            { name: "p_key", type: "number", width: 20, title: "ID"},
-            { name: "created", type: "date", width: 40, title: "Created"},
-            { name: "valve_name", type: "text", width: 20, title: "Name"},
+            { name: "p_key", type: "number", width: 20, title: "ID" },
+            // { name: "created", type: "date", width: 40, title: "Created"},
+             { title: "Created", name: "created", type: "date", width: 25, cellRenderer: function(item){
+                let options = {timeOnly:false}
+              return $("<td>").append(formatDate(item, options));
+            } },
+            { name: "valve_name", type: "text", width: 20, title: "Valve"},
             { name: "state", type: "text", width: 20, title: "Event State"},
-            { name: "open_time", type: "number", width: 20, title: "Open Time"},
-            { name: "water_start", type: "date", width: 40, title: "Start"},
-            { name: "water_stop", type: "date", width: 40, title: "End"},
-            { name: "trigger_kpa", type: "number", width: 20, title: "Trigger KPa"},
+            { name: "open_time", type: "number", width: 20, title: "Open Time", cellRenderer: function(item){
+                if (item){
+                    item = item.toFixed(2)
+                }
+                // else {
+                //     item = 0;
+                // }
+              return $("<td>").append(item);
+            } },
+            { name: "water_start", type: "date", width: 40, title: "Start", cellRenderer: function(item){
+                let options = {timeOnly:true}
+              return $("<td>").append(formatDate(item, options));
+            } },
+           { name: "water_stop", type: "date", width: 40, title: "End", cellRenderer: function(item){
+                let options = {timeOnly:true}
+              return $("<td>").append(formatDate(item, options));
+            } },
+            { name: "trigger_kpa", type: "number", width: 20, title: "Trigger KPa", cellRenderer: function(item){
+                if (item){
+                    item = item.toFixed(2)
+                }
+              return $("<td>").append(item);
+            } },
             { type: "control" }
         ]
 
