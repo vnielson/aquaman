@@ -1,6 +1,8 @@
 import RPi.GPIO as GPIO  # import RPi.GPIO module
 from datetime import datetime
-import numpy as np
+# import numpy as np
+from project.core.aqualogger import senlog
+
 
 
 class MoistureMeter:
@@ -47,21 +49,23 @@ class MoistureMeter:
         # set up the pin for input
         GPIO.setmode(GPIO.BCM)  # choose BCM or BOARD
         GPIO.setup(self.bcmpin, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # set input pin as an
-        # print("GPIO Pin " + str(self.bcmpin) + " set as input")
+        senlog.debug("GPIO Pin " + str(self.bcmpin) + " set as input")
         # Set up callback for sensor input (rising edge)
 
-        # print("Begin gathering sensor data for sensor " + str(self.id) + "  " + str(self.bcmpin))
+        senlog.debug("Begin gathering sensor data for sensor " + str(self.id) + "  " + str(self.bcmpin))
 
-        # print("self.bcmpin is ", self.bcmpin)
+        senlog.debug("self.bcmpin is %d", self.bcmpin)
         state = GPIO.input(self.bcmpin)
-        # print("State is ", state)
+        senlog.debug("State is %s", state)
         # wait for first rising edge detection
 
         # wait for up to 5 seconds for a rising edge (timeout is in milliseconds)
         channel = GPIO.wait_for_edge(self.bcmpin, GPIO.RISING, timeout=5000)
 
+        senlog.debug(channel)
+
         if channel is None:
-            print('Timeout occurred')
+            senlog.error('Timeout occurred')
         # else:
         #     print('Edge detected on channel', channel)
 
@@ -113,7 +117,9 @@ class MoistureMeter:
                        "max_frequency": max_frequency, "mean": mean, "std_dev": stddev}
 
 
+        senlog.debug(return_data)
 
+        # GPIO.cleanup()
         return return_data
 
 

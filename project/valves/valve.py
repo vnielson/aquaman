@@ -1,5 +1,7 @@
 from enum import Enum
 import piplates.RELAYplate as RELAY
+import RPi.GPIO as GPIO  # import RPi.GPIO module
+from project.core.aqualogger import valvelog
 
 ##############################################################################
 ###### Customize the names of your relays by changing the labels below: ######
@@ -30,11 +32,17 @@ labels = ['Relay 1', 'Relay 2', 'Relay 3', 'Relay 4', 'Relay 5', 'Relay 6', 'Rel
 class valve:
 
     def __init__(self, id, relayID ):
+        GPIO.setmode(GPIO.BCM)  # choose BCM or BOARD
+        # GPIO.setup(AA, GPIO.OUT)
         self.id = id
         self.relayID = int(relayID)
         self.relayAddress = 0
         self.relayMask = 1 << (relayID-1)
         # set up the pin for output
+
+    def __del__(self):
+        valvelog.debug("Valve Destructor called for Relay: ")
+        valvelog.debug(self.relayID)
 
     def __str__(self):
         mask = "{0:b}".format(self.relayMask)
@@ -43,19 +51,19 @@ class valve:
         return ret_string
 
     def valve_status(self):
-        print("Get Valve Status")
-        print(self)
+        valvelog.debug("Get Valve Status")
+        valvelog.debug(self)
         # returns the current valve status open, closed, error
         relayStates = RELAY.relaySTATE(self.relayAddress)
-        print("Relay States:")
-        print(relayStates)
-        print("Relay Mask:")
-        print("{0:b}".format(self.relayMask))
-        print(self.relayMask)
-        print((relayStates & self.relayMask))
+        valvelog.debug("Relay States:")
+        valvelog.debug(relayStates)
+        valvelog.debug("Relay Mask:")
+        valvelog.debug("{0:b}".format(self.relayMask))
+        valvelog.debug(self.relayMask)
+        valvelog.debug((relayStates & self.relayMask))
         valveStatus = "CLOSED"
         if ((relayStates & self.relayMask) != 0):
-            print("Valve is open!")
+            valvelog.debug("Valve is open!")
             valveStatus = "OPEN"
 
         return valveStatus
@@ -67,12 +75,13 @@ class valve:
         RELAY.relayON(0, self.relayID)
 
         vs = self.valve_status()
+        valvelog.info("Open valve / relay : %d", self.relayID)
 
         if (vs == "OPEN"):
-            print("Open Success")
+            valvelog.info("Open Success")
             return True
         else:
-            print("Open Failed")
+            valvelog.error("Open Failed on relay: %d ", self.relayID)
             return False
 
 
@@ -83,11 +92,12 @@ class valve:
         RELAY.relayOFF(0, self.relayID)
 
         vs = self.valve_status()
+        valvelog.info("Close valve / relay : %d", self.relayID)
 
         if (vs == "CLOSED"):
-            print("Close Success")
+            valvelog.info("Close Success")
             return True
         else:
-            print("Close Failed")
+            valvelog.error("Close Failed on relay: %d ", self.relayID)
             return False
 

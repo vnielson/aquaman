@@ -128,9 +128,6 @@ var aqSensorController = (function(){
                 }).done(function(response) {
                     console.log("Insert Response")
                     console.log(response);
-                    // This approach leads to a bug where added school is listed twice
-                    // addSchool(response);
-                    // updateContestantTabInfo();
                     d.resolve(response);
                 });
                 return d.promise();
@@ -188,15 +185,14 @@ $(function() {
             loadData: function() {
                 console.log("LOAD DATA: Sensor Readings");
                 var d = $.Deferred();
-                var url = "/sensors/readings"
-
+                var url = "/sensors/readings?sort_order=desc"
                 $.ajax({
                     url: url,
                     dataType: "json",
                     type: "GET"
                 }).done(function(response) {
-                    console.log("Readings")
-                    console.log(response)
+                    // console.log("Readings")
+                    // console.log(response)
                     d.resolve(response);
                 });
                 return d.promise();
@@ -264,13 +260,22 @@ $(function() {
         fields: [
             { name: "sensor_id", type: "number", width: 20, title: "ID"},
             { name: "sensor_name", type: "text", width: 20, title: "Sensor Name", filtering: false},
-            { name: "recorded_at", type: "date", width: 20, title: "Date Recorded"},
-            { name: "kpa_value", type: "number", width: 20, title: "KPa Value"},
-            { name: "computed_frequency", type: "number", width: 20, title: "Computed Freq"},
-            { name: "min_frequency", type: "number", width: 20, title: "Min Freq"},
-            { name: "max_frequency", type: "number", width: 20, title: "Max Freq"},
-            { name: "mean", type: "number", width: 20, title: "Mean"},
-            { name: "std_dev", type: "number", width: 20, title: "STD Dev"},
+            { name: "data_valid", type: "boolean", width: 10, title: "Valid?", filtering: false},
+            // { name: "recorded_at", type: "date", width: 20, title: "Date Recorded"},
+            { title: "Recorded", name: "recorded_at", type: "date", width: 25, cellRenderer: function(item, value){
+                const dateRecorded = new Date(item);
+                let day = dateRecorded.getDate();
+                let month = dateRecorded.getMonth() + 1;
+                let timeOfDay = dateRecorded.toLocaleTimeString('en-US');
+                let formatedRecorded = `${month}/${day} ${timeOfDay}`
+              return $("<td>").append(formatedRecorded);
+            } },
+            { name: "kpa_value", type: "number", width: 10, title: "KPa"},
+            { name: "computed_frequency", type: "number", width: 10, title: "F (Hz)"},
+            // { name: "min_frequency", type: "number", width: 20, title: "Min Freq"},
+            // { name: "max_frequency", type: "number", width: 20, title: "Max Freq"},
+            // { name: "mean", type: "number", width: 20, title: "Mean"},
+            // { name: "std_dev", type: "number", width: 20, title: "STD Dev"},
             { type: "control",
                 editButton: false,
                 deleteButton: false

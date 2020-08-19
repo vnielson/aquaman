@@ -46,6 +46,18 @@
               System Testing
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link panel-nav" href="#" data-target="#panel-log-viewer">
+              <span data-feather="bar-chart-2"></span>
+              Log Viewer
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link panel-nav" href="#" data-target="#panel-weather">
+              <span data-feather="bar-chart-2"></span>
+              Weather
+            </a>
+          </li>
         </ul>
 
 
@@ -64,6 +76,8 @@
         {% include 'crops.html' %}
         {% include 'watering_events.html' %}
         {% include 'system_testing.html' %}
+        {% include 'log_viewer.html' %}
+        {% include 'weather.html' %}
     </main>
   </div>
 </div>
@@ -87,8 +101,14 @@
     <!-- Crop Panel Management -->
     <script type="text/javascript" src="static/js/crop_controller.js"></script>
 
+    <!-- Weather Panel Management -->
+    <script type="text/javascript" src="static/js/weather_controller.js"></script>
+
     <!-- System Test Page Management -->
     <script type="text/javascript" src="static/js/system_test.js"></script>
+
+    <!-- Log Viewer Page Management -->
+    <script type="text/javascript" src="static/js/log_viewer.js"></script>
 
     <script type="module" src="/static/js/index.js" charset="utf-8"></script>
 
