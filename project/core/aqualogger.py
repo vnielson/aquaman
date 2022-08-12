@@ -52,8 +52,8 @@ def init_logger(logger_instance, log_level, log_file_name):
 def init_logging_system(for_which_system):
     if (for_which_system == "aquaman"):
         init_logger(aqlog, logging.INFO, "aquaman.log")
-        init_logger(sysoplog, logging.INFO, "aquaman.log")
-        init_logger(senlog, logging.INFO, "aquaman.log")
+        init_logger(sysoplog, logging.DEBUG, "aquaman.log")
+        init_logger(senlog, logging.DEBUG, "aquaman.log")
         init_logger(corelog, logging.INFO, "aquaman.log")
         init_logger(croplog, logging.INFO, "aquaman.log")
         init_logger(valvelog, logging.INFO, "aquaman.log")

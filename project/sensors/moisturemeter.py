@@ -4,8 +4,9 @@ from datetime import datetime
 from project.core.aqualogger import senlog
 
 
-
 class MoistureMeter:
+    get_sensor_data_count = 0
+
     def __init__(self, id, bcmpin):
         self.id = id
         self.bcmpin = int(bcmpin)
@@ -46,6 +47,9 @@ class MoistureMeter:
         return int(kPa)
 
     def get_kpa_value(self):
+        print("GET KPA=====================")
+        senlog.debug(f"Get sensor data count: {MoistureMeter.get_sensor_data_count}")
+        MoistureMeter.get_sensor_data_count += 1
         # set up the pin for input
         GPIO.setmode(GPIO.BCM)  # choose BCM or BOARD
         GPIO.setup(self.bcmpin, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # set input pin as an
@@ -66,19 +70,20 @@ class MoistureMeter:
 
         if channel is None:
             senlog.error('Timeout occurred')
-        # else:
-        #     print('Edge detected on channel', channel)
+        else:
+            print('Edge detected on channel', channel)
 
         # start timer to begin measuring
 
         tstart = datetime.now()
-        # print("Time Start : ", tstart)
+        print("Time Start : ", tstart)
 
-        # sample_count = 500
-        sample_count = 5000
+        sample_count = 500
+        # sample_count = 5000
 
         valid_data = True
         for i in range(0, sample_count):
+            # print(f"Loop: {i}")
             channel = GPIO.wait_for_edge(self.bcmpin, GPIO.RISING, timeout=5000)
             channel = GPIO.wait_for_edge(self.bcmpin, GPIO.FALLING, timeout=5000)
             if channel is None:
@@ -119,7 +124,7 @@ class MoistureMeter:
 
         senlog.debug(return_data)
 
-        # GPIO.cleanup()
+        GPIO.cleanup()
         return return_data
 
 
