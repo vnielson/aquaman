@@ -85,7 +85,7 @@ app.register_blueprint(log_viewer)
 app.register_blueprint(weather)
 
 # Initialize the System
-if os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+if os.environ.get('WERKZEUG_RUN_MAIN') != 'true':
     system_operations.initialize_system()
     system_operations.initialize_scheduler()
 

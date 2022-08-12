@@ -10,6 +10,10 @@ class bme280_sensor:
         self.address = 0x77
         self.bus = smbus2.SMBus(self.port)
 
+    def __del__(self):
+        self.bus.close()
+
+
     def convert_raw_reading_to_us_units(self, raw_data):
         converted_data = {}
         converted_data["id"] = raw_data.id

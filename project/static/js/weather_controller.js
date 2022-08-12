@@ -72,7 +72,8 @@ var weatherController = (function (){
 
     function fetchWeatherReadingData(){
         console.log(`Fetch Sensor Reading Data`)
-        let weatherReadingsUrl = "/weather/readings?days=14";
+        // let weatherReadingsUrl = "/weather/readings?days=14";
+        let weatherReadingsUrl = "/weather/readings";
 
         fetch(weatherReadingsUrl)
             .then( (resp) => resp.json())

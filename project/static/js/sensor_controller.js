@@ -191,8 +191,8 @@ $(function() {
                     dataType: "json",
                     type: "GET"
                 }).done(function(response) {
-                    // console.log("Readings")
-                    // console.log(response)
+                    console.log("Readings")
+                    console.log(response)
                     d.resolve(response);
                 });
                 return d.promise();

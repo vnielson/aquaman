@@ -45,24 +45,25 @@ def initialize_system():
 
 
 def initialize_scheduler():
-    # aqua_sched.add_job(do_moister_readings, 'interval', seconds=30)
+    aqua_sched.add_job(do_moister_readings, 'interval', seconds=30)
     do_moister_readings_job =aqua_sched.add_job(do_moister_readings, 'interval', minutes=20)
     sysoplog.debug("Do moisture reading Job info:")
     sysoplog.debug(do_moister_readings_job.name)
     sysoplog.debug(do_moister_readings_job)
-    do_watering_job = aqua_sched.add_job(func=do_watering, args=[False], trigger='interval', minutes=60)
-    sysoplog.debug("Do Watering Job info:")
-    sysoplog.debug(do_watering_job.name)
-    sysoplog.debug(do_watering_job)
-    initial_water_check_date_time = datetime.datetime.now() + datetime.timedelta(minutes = 2)
-    # aqua_sched.add_date_job(func=valves.close_valve, args=valve_id, date=close_valve_date_time)
-    initial_water_check_job = aqua_sched.add_job(func=do_watering, args=[False],
-                       trigger='date',
-                       run_date=initial_water_check_date_time)
-    sysoplog.debug(initial_water_check_job.name)
-    sysoplog.debug(initial_water_check_job)
+    # do_watering_job = aqua_sched.add_job(func=do_watering, args=[False], trigger='interval', minutes=60)
+    # sysoplog.debug("Do Watering Job info:")
+    # sysoplog.debug(do_watering_job.name)
+    # sysoplog.debug(do_watering_job)
+    # initial_water_check_date_time = datetime.datetime.now() + datetime.timedelta(minutes = 2)
+    # # aqua_sched.add_date_job(func=valves.close_valve, args=valve_id, date=close_valve_date_time)
+    # initial_water_check_job = aqua_sched.add_job(func=do_watering, args=[False],
+    #                    trigger='date',
+    #                    run_date=initial_water_check_date_time)
+    # sysoplog.debug(initial_water_check_job.name)
+    # sysoplog.debug(initial_water_check_job)
 
     do_weather_readings_job =aqua_sched.add_job(do_weather_readings, 'interval', minutes=15)
+    # do_weather_readings_job =aqua_sched.add_job(do_weather_readings, 'interval', seconds=5)
     sysoplog.debug("Do weather reading Job info:")
     sysoplog.debug(do_weather_readings_job.name)
     sysoplog.debug(do_weather_readings_job)
@@ -79,8 +80,8 @@ def do_weather_readings():
         weather_sensors.do_weather_reading()
     except Exception:
         message = "Fatal error in do_weather_readings"
-        sysoplog.exception(message)
         send_email_notice("AQUAMAN: Exception Detected", message)
+        sysoplog.exception(message)
 
 def do_moister_readings():
     sysoplog.info("====================================")
@@ -90,8 +91,8 @@ def do_moister_readings():
         sensors.do_sensor_readings()
     except Exception:
         message = "Fatal error in do_moister_readings"
-        sysoplog.exception(message)
         send_email_notice("AQUAMAN: Exception Detected", message)
+        sysoplog.exception(message)
 
 
 
@@ -203,7 +204,6 @@ def do_watering(test_mode):
                     else:
                         water_job = water_crop(crop, nxt_sensor.valve_id, avg_kpa)
                         email_subject = "Watering Event Started"
-                        send_email_notice(email_subject, "Testing")
                         email_content = 'Sensor:{sensor} Valve:{valve}   Crop:{crop} Expected End Time:{end}'.format(sensor=nxt_sensor.sensor_name,valve=nxt_sensor.valve_id,
                                                                                                      crop=crop.crop_name,
                                                                                                      end=water_job.trigger)
@@ -213,8 +213,8 @@ def do_watering(test_mode):
                     sysoplog.info("No crops need watering")
     except Exception:
         message = "Fatal error in do_watering"
-        sysoplog.exception(message)
         send_email_notice("AQUAMAN: Exception Detected", message)
+        sysoplog.exception(message)
 
 
 
