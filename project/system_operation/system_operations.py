@@ -45,7 +45,7 @@ def initialize_system():
 
 
 def initialize_scheduler():
-    aqua_sched.add_job(do_moister_readings, 'interval', seconds=30)
+    aqua_sched.add_job(do_moister_readings, 'interval', seconds=3600)
     do_moister_readings_job =aqua_sched.add_job(do_moister_readings, 'interval', minutes=20)
     sysoplog.debug("Do moisture reading Job info:")
     sysoplog.debug(do_moister_readings_job.name)

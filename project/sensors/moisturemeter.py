@@ -48,6 +48,7 @@ class MoistureMeter:
 
     def get_kpa_value(self):
         print("GET KPA=====================")
+        senlog.info(f"This is a SENLOG INFO MESSAGE: {MoistureMeter.get_sensor_data_count}")
         senlog.debug(f"Get sensor data count: {MoistureMeter.get_sensor_data_count}")
         MoistureMeter.get_sensor_data_count += 1
         # set up the pin for input
