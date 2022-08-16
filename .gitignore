@@ -1,6 +1,6 @@
-local.env
+project/local.env
 */__pycache__/
 */*/__pycache__/
-.idea/
+.idea/*
 .idea/misc.xml
 /project/RELAYplateQuickReferenceGuide.pdf
