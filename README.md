@@ -107,3 +107,12 @@ alias stopa='sudo systemctl stop aquaman'
 For the database, sqlite is used and sqlitebrowser is used as a db admin/monitor tool if/when needed
 sqlite
 
+## Current Status
+
+Project is at v1.0
+All initial intended functionality is implemented. There are a couple of issues and of course
+many improvements that could be made.
+
+
+Known Significant Issues:
+1. Occasional failure in GPIO package waiting for edge. Seems very regular every 80 sensor reads. 
