@@ -4,7 +4,7 @@ import smtplib
 
 # Email Variables
 SMTP_SERVER = os.getenv("SMTP_SERVER")
-SMTP_PORT =  os.getenv("SMTP_PORT")
+SMTP_PORT = os.getenv("SMTP_PORT")
 GMAIL_USERNAME =  os.getenv("GMAIL_USERNAME")
 GMAIL_PASSWORD =  os.getenv("GMAIL_PASSWORD")
 
