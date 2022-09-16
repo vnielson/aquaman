@@ -67,7 +67,7 @@ kombu==5.2.4
 lazy-object-proxy==1.7.1
 logilab-common==1.9.7
 lxml==4.9.1
-Mako==1.2.1
+Mako==1.2.2
 MarkupSafe==2.1.1
 matplotlib==3.5.3
 matplotlib-inline==0.1.3
