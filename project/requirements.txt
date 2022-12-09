@@ -16,7 +16,7 @@ blinkt==0.1.2
 buttonshim==0.0.2
 cached-property==1.5.2
 Cap1xxx==0.1.4
-certifi==2022.6.15
+certifi==2022.12.7
 cffi==1.15.1
 chardet==5.0.0
 charset-normalizer==2.1.0
